@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://djqe6qcvbm1qw"]
+
+[ext_resource type="PackedScene" uid="uid://5x7qq34cmr64" path="res://paper_plane/scene.gltf" id="1_vsx5g"]
+[ext_resource type="Shader" path="res://depth.gdshader" id="2_jsyox"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s7fxa"]
+render_priority = 0
+shader = ExtResource("2_jsyox")
+
+[sub_resource type="QuadMesh" id="QuadMesh_bjxim"]
+material = SubResource("ShaderMaterial_s7fxa")
+flip_faces = true
+size = Vector2(2, 2)
+
+[node name="PlaneScene" type="Node3D"]
+
+[node name="Sketchfab_Scene" parent="." instance=ExtResource("1_vsx5g")]
+
+[node name="DepthCam" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.5, 0)
+
+[node name="DepthTextureAccess" type="MeshInstance3D" parent="DepthCam"]
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_bjxim")
+skeleton = NodePath("../..")

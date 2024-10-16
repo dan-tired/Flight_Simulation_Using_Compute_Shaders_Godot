@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dw41nmvofjv0c"]
+
+[ext_resource type="PackedScene" uid="uid://djqe6qcvbm1qw" path="res://plane_scene.tscn" id="1_s1n1h"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_n3cyv"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Node" type="Node"]
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="PlaneScene" parent="SubViewport" instance=ExtResource("1_s1n1h")]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(578, 320)
+texture = SubResource("ViewportTexture_n3cyv")
