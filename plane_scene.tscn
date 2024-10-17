@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://djqe6qcvbm1qw"]
+[gd_scene load_steps=6 format=3 uid="uid://djqe6qcvbm1qw"]
 
+[ext_resource type="Script" path="res://plane_scene.gd" id="1_4oic6"]
 [ext_resource type="PackedScene" uid="uid://5x7qq34cmr64" path="res://paper_plane/scene.gltf" id="1_vsx5g"]
 [ext_resource type="Shader" path="res://depth.gdshader" id="2_jsyox"]
 
@@ -13,12 +14,15 @@ flip_faces = true
 size = Vector2(2, 2)
 
 [node name="PlaneScene" type="Node3D"]
+script = ExtResource("1_4oic6")
 
 [node name="Sketchfab_Scene" parent="." instance=ExtResource("1_vsx5g")]
+transform = Transform3D(1, 0, 0, 0, 0.92406, -0.382248, 0, 0.382248, 0.92406, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -1, 0)
+fov = 20.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_id8yq")
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.3, 0)
