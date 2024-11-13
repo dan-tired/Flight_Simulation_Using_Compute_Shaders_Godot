@@ -1,16 +1,48 @@
-[gd_scene load_steps=3 format=3 uid="uid://dw41nmvofjv0c"]
+[gd_scene load_steps=7 format=3 uid="uid://dw41nmvofjv0c"]
 
 [ext_resource type="PackedScene" uid="uid://djqe6qcvbm1qw" path="res://plane_scene.tscn" id="1_s1n1h"]
+[ext_resource type="Texture2D" uid="uid://2bj400h8s1c" path="res://icon.svg" id="2_c6nuj"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_n3cyv"]
-viewport_path = NodePath("SubViewport")
+viewport_path = NodePath("Node3D/SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xfaqm"]
+albedo_texture = ExtResource("2_c6nuj")
+
+[sub_resource type="QuadMesh" id="QuadMesh_0mlwa"]
+lightmap_size_hint = Vector2i(7, 7)
+material = SubResource("StandardMaterial3D_xfaqm")
+orientation = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kfamc"]
 
 [node name="Node" type="Node"]
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 1.82077, -1.03856)
+shadow_enabled = true
 
-[node name="PlaneScene" parent="SubViewport" instance=ExtResource("1_s1n1h")]
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="SubViewport" type="SubViewport" parent="Node3D"]
+
+[node name="PlaneScene" parent="Node3D/SubViewport" instance=ExtResource("1_s1n1h")]
+
+[node name="PlaneCam" type="Camera3D" parent="Node3D"]
+transform = Transform3D(-4.37114e-08, -0.642788, 0.766044, 0, 0.766044, 0.642788, -1, 2.80971e-08, -3.34849e-08, 0.494172, 0.361772, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(578, 320)
 texture = SubResource("ViewportTexture_n3cyv")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.578337, 0)
+mesh = SubResource("QuadMesh_0mlwa")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+shape = SubResource("BoxShape3D_kfamc")

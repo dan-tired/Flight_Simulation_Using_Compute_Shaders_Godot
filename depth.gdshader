@@ -7,6 +7,7 @@ uniform sampler2D normal_rough_texture : hint_normal_roughness_texture;
 
 void vertex() {
 	POSITION = vec4(VERTEX.xy, 1.0, 1.0);
+	COLOR = vec4(COLOR);
 }
 
 void fragment() {
