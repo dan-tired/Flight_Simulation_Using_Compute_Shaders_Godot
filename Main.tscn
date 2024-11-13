@@ -15,6 +15,7 @@ material = SubResource("StandardMaterial3D_xfaqm")
 orientation = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kfamc"]
+size = Vector3(1, 0.931763, 1)
 
 [node name="Node" type="Node"]
 
@@ -44,5 +45,5 @@ mesh = SubResource("QuadMesh_0mlwa")
 skeleton = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.03412, 0)
 shape = SubResource("BoxShape3D_kfamc")

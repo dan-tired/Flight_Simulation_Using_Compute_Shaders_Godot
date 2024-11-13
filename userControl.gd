@@ -48,6 +48,7 @@ func handleInput(delta: float) -> void:
 	if Input.is_action_pressed("Roll Right") :
 		rollR += delta * ROLL_SPEED
 	
+	# Converting numeric shift into an angle
 	var pitchAngle : float = atan(pitchD)
 	var rollAngle : float = atan(rollR)
 	
