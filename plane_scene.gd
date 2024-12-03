@@ -1,11 +1,24 @@
-extends Node3D
+extends RigidBody3D
 
+const THRUST_ACCEL : float = 1
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
+@onready var thrust : float = 0.0
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	pass
+func _physics_process(delta: float) -> void:
+	
+	if Input.is_action_pressed("Increase Thrust") :
+		thrust += THRUST_ACCEL * delta
+	if Input.is_action_pressed("Reduce Thrust") :
+		thrust -= THRUST_ACCEL * delta
+	
+	if thrust < 0.0 :
+		thrust = 0.0
+	
+	var direction : Vector3 = $PlaneBody/Front.global_position - $PlaneBody.global_position
+	
+	direction = direction.normalized()
+	
+	global_position += direction * thrust * delta
+	
+	print(global_position)

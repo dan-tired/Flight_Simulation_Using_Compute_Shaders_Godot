@@ -17,11 +17,12 @@ size = Vector2(2, 2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_vkqst"]
 size = Vector3(0.352234, 0.0440063, 0.215088)
 
-[node name="PlaneScene" type="Node3D"]
+[node name="PlaneScene" type="RigidBody3D"]
 script = ExtResource("1_4oic6")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="DepthCam" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.86397, 0)
+current = true
 fov = 30.0
 near = 0.001
 
@@ -29,21 +30,21 @@ near = 0.001
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_id8yq")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="."]
+[node name="PlaneBody" type="Node3D" parent="."]
 script = ExtResource("3_7pyr4")
 
-[node name="Front" type="Node3D" parent="RigidBody3D"]
+[node name="Front" type="Node3D" parent="PlaneBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 
-[node name="Right" type="Node3D" parent="RigidBody3D"]
+[node name="Right" type="Node3D" parent="PlaneBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 
-[node name="Up" type="Node3D" parent="RigidBody3D"]
+[node name="Up" type="Node3D" parent="PlaneBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
-[node name="Sketchfab_Scene" parent="RigidBody3D" instance=ExtResource("1_vsx5g")]
+[node name="Sketchfab_Scene" parent="PlaneBody" instance=ExtResource("1_vsx5g")]
 transform = Transform3D(0.99474, 0.102428, 0, -0.102428, 0.99474, 0, 0, 0, 1, -0.0109882, -0.0184118, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.994703, 0.102792, 0, -0.102792, 0.994703, 0, 0, 0, 1, -0.0112078, 0.00331145, -0.000366211)
 shape = SubResource("BoxShape3D_vkqst")

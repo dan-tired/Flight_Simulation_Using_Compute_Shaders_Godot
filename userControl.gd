@@ -1,4 +1,4 @@
-extends RigidBody3D
+extends Node3D
 
 const DOWN = Vector3(.0, -1.0, .0)
 
@@ -9,11 +9,6 @@ var planeDirection : Vector3
 @onready var planeFront : Vector3 = Vector3(-1.0, .0, .0)
 @onready var planeRight : Vector3 = Vector3(.0, .0, -1.0)
 @onready var planeUp : Vector3 = Vector3(.0, 1.0, .0)
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
