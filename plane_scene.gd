@@ -21,4 +21,4 @@ func _physics_process(delta: float) -> void:
 	
 	global_position += direction * thrust * delta
 	
-	print(global_position)
+	#print(global_position)

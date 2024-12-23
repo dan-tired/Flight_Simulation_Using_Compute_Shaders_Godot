@@ -1,12 +1,12 @@
 shader_type spatial;
 
-render_mode unshaded, fog_disabled;
+render_mode unshaded, fog_disabled, cull_back;
 
 uniform sampler2D depth_texture : source_color, hint_depth_texture;
 uniform sampler2D normal_rough_texture : hint_normal_roughness_texture;
 
 void vertex() {
-	POSITION = vec4(VERTEX.xy, 1.0, 1.0);
+	//POSITION = vec4(VERTEX.xy, 1.0, 1.0);
 	COLOR = vec4(COLOR);
 }
 
@@ -33,7 +33,8 @@ void fragment() {
 	// ALBEDO.rgb = normals_world;
 	
 	// Remove visualisation
-	ALPHA = 0.0;
+	ALBEDO.rgb = normals_world;
+	ALPHA = 1.0;
 	
 }
 
