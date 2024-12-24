@@ -4,6 +4,7 @@ var rd : RenderingDevice
 var shader : RID
 var pipeline : RID
 var texture_set : RID
+var texture_size : Vector2i
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -12,13 +13,12 @@ func _ready() -> void:
 	# Don't think I need to be doing anything else here?
 	# I guess we'll find out soon enough!
 
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	RenderingServer.call_on_render_thread(_render_process)
-	
-	# Again, realistically all I want to be doing is chucking the
-	# texture info into the rendering device
+
+func _exit_tree() -> void:
+	RenderingServer.call_on_render_thread(_free_resources)
 
 func _init_compute_code() -> void:
 	# Retrieving the render device
@@ -32,11 +32,18 @@ func _init_compute_code() -> void:
 	var texture : ViewportTexture = get_texture()
 	var rd_texture = RenderingServer.texture_get_rd_texture(texture.get_rid())
 	
+	texture_size = get_texture().get_size()
+	
 	render_target_update_mode = UpdateMode.UPDATE_ALWAYS
 	
 	assert(rd.texture_is_valid(rd_texture))
 	
-	texture_set = _create_uniform_sets(rd_texture)
+	var uniform := RDUniform.new()
+	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+	uniform.binding = 0
+	uniform.add_id(rd_texture)
+	
+	texture_set = rd.uniform_set_create([uniform], shader, 0)
 	
 	## May need to copy the viewport texture into a new texture
 	## Basically just due to it being a shared texture?
@@ -56,14 +63,17 @@ func _init_compute_code() -> void:
 			#RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
 	#)
 
-func _create_uniform_sets(texture_rd : RID) -> RID:
-	var uniform := RDUniform.new()
-	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-	uniform.binding = 0
-	uniform.add_id(texture_rd)
-	# Only using one set in theory so this is fine I think?
-	# Also the sets are dependencies so I don't need to free them?
-	return rd.uniform_set_create([uniform], shader, 0)
-
 func _render_process() -> void:
-	pass
+	# I'll figure out what needs to be pushed up other than the texture size 
+	
+	var x_groups : int = (texture_size.x - 1) / 8 + 1
+	var y_groups : int = (texture_size.y - 1) / 8 + 1
+	
+	var compute_list := rd.compute_list_begin()
+	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
+	rd.compute_list_bind_uniform_set(compute_list, texture_set, 0)
+	rd.compute_list_dispatch(compute_list, x_groups, y_groups, 1)
+	rd.compute_list_end()
+
+func _free_resources() -> void :
+	rd.free_rid(shader)

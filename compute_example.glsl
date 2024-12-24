@@ -1,13 +1,14 @@
 #[compute]
 #version 450
 
-layout(local_size_x = 2, local_size_y = 1, local_size_z = 1) in;
-
-layout(set = 0, binding = 0, std430) restrict uniform MyDataBuffer {
-    float data[];
-}
-my_data_buffer;
+layout(r32f, set = 0, binding = 0) uniform image2D normalImage;
 
 void main() {
-    my_data_buffer.data[gl_GlobalInvocationID.x] *= 2.0;
+	ivec2 uv = ivec2(gl_GlobalInvocationID.xy);
+
+    vec4 imagePixel = imageLoad(normalImage, uv);
+
+    vec4 texel = vec4(0,0,0,0);
+
+    imageStore(normalImage, uv, texel);
 }

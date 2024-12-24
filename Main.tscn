@@ -36,6 +36,5 @@ light_color = Color(0.989977, 0.979559, 0.956863, 1)
 shadow_enabled = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-visible = false
 position = Vector2(602, 310)
 texture = SubResource("ViewportTexture_ap5ey")
