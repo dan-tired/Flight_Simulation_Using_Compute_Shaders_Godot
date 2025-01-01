@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://dntw0xdlqi03d"]
+
+[node name="Terrain" type="Node3D"]
