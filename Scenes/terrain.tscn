@@ -1,3 +1,9 @@
-[gd_scene format=3 uid="uid://dntw0xdlqi03d"]
+[gd_scene load_steps=2 format=3 uid="uid://dntw0xdlqi03d"]
+
+[ext_resource type="ArrayMesh" uid="uid://dmat0vntidhnv" path="res://Assets/clipmap_mesh.obj" id="1_dgqp2"]
 
 [node name="Terrain" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0)
+mesh = ExtResource("1_dgqp2")

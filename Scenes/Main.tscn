@@ -1,12 +1,23 @@
-[gd_scene load_steps=6 format=3 uid="uid://dw41nmvofjv0c"]
+[gd_scene load_steps=10 format=3 uid="uid://dw41nmvofjv0c"]
 
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_skjnb"]
 [ext_resource type="Script" path="res://Scripts/compute_forces.gd" id="2_5yn84"]
 [ext_resource type="PackedScene" uid="uid://djqe6qcvbm1qw" path="res://Scenes/plane_scene.tscn" id="3_swi1m"]
+[ext_resource type="PackedScene" uid="uid://dntw0xdlqi03d" path="res://Scenes/terrain.tscn" id="4_5p7s3"]
+[ext_resource type="Shader" uid="uid://b5uw7hmk5lrpe" path="res://Shaders/terrain.tres" id="5_a5e0e"]
+[ext_resource type="Texture2D" uid="uid://dl75v2m60tqnj" path="res://Assets/heightmap_overlay.jpg" id="6_a66ml"]
 
 [sub_resource type="Environment" id="Environment_dlho0"]
 background_mode = 1
 background_color = Color(0.587336, 0.687652, 0.753641, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ktd2l"]
+render_priority = 0
+shader = ExtResource("5_a5e0e")
+shader_parameter/uvx = -35.115
+shader_parameter/uvy = -26.087
+shader_parameter/terrain_height = 50
+shader_parameter/heightmap = ExtResource("6_a66ml")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_ap5ey"]
 viewport_path = NodePath("DepthSubViewport")
@@ -28,10 +39,19 @@ script = ExtResource("2_5yn84")
 environment = SubResource("Environment_dlho0")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 1.82077, -1.03856)
+transform = Transform3D(-0.797729, -0.595499, -0.0949143, -0.337197, 0.310027, 0.888921, -0.499926, 0.741123, -0.448118, -9.0095, 16.9456, -26.9887)
 light_color = Color(0.989977, 0.979559, 0.956863, 1)
 shadow_enabled = true
 
+[node name="Terrain" parent="." instance=ExtResource("4_5p7s3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10, 0)
+
+[node name="MeshInstance3D" parent="Terrain" index="0"]
+surface_material_override/0 = SubResource("ShaderMaterial_ktd2l")
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(602, 310)
 texture = SubResource("ViewportTexture_ap5ey")
+
+[editable path="Terrain"]
