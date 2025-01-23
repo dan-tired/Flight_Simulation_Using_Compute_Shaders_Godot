@@ -24,7 +24,7 @@ func _init_compute_code() -> void:
 	# Retrieving the render device
 	rd = RenderingServer.get_rendering_device()
 	# Creating the shader
-	var shader_file : Resource = load("res://compute_example.glsl")
+	var shader_file : Resource = load("res://Shaders/compute_example.glsl")
 	var shader_spirv : RDShaderSPIRV = shader_file.get_spirv()
 	shader = rd.shader_create_from_spirv(shader_spirv)
 	pipeline = rd.compute_pipeline_create(shader)
