@@ -9,11 +9,13 @@ func _physics_process(delta: float) -> void:
 	
 	if Input.is_action_pressed("Increase Thrust") :
 		thrust += THRUST_ACCEL * delta
-	if Input.is_action_pressed("Reduce Thrust") :
+	elif Input.is_action_pressed("Reduce Thrust") :
 		thrust -= THRUST_ACCEL * delta
-	
-	if thrust < 0.0 :
-		thrust = 0.0
+	else :
+		if thrust >= 0.0 :
+			thrust -= 0.5 * THRUST_ACCEL * delta
+		else :
+			thrust = 0.0
 	
 	var direction : Vector3 = $PlaneBody/Front.global_position - $PlaneBody.global_position
 	
