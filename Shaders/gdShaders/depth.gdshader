@@ -19,7 +19,7 @@ void fragment() {
 
 	vec4 world = INV_VIEW_MATRIX * INV_PROJECTION_MATRIX * vec4(ndc, 1.0);
 	vec3 world_position = world.xyz / world.w;
-	
+
 	vec4 normal_rough = texture(normal_rough_texture, SCREEN_UV);
 	vec3 normals_view_raw = normal_rough.xyz; // Normals in view space, in [0.0, 1.0] range
 	vec3 normals_view_remapped = normals_view_raw.xyz * 2.0 - 1.0;  // Normals in view space, in [-1.0, 1.0] range
@@ -31,11 +31,11 @@ void fragment() {
 	//ALBEDO.rgb = fract(world_position).xyz;
 	// Visualize world normals
 	// ALBEDO.rgb = normals_world;
-	
+
 	// Remove visualisation
 	ALBEDO.rgb = normals_world;
 	ALPHA = 1.0;
-	
+
 }
 
 //void light() {

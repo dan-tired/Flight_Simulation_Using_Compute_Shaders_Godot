@@ -1,23 +1,15 @@
-[gd_scene load_steps=10 format=3 uid="uid://dw41nmvofjv0c"]
+[gd_scene load_steps=8 format=3 uid="uid://dw41nmvofjv0c"]
 
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_skjnb"]
 [ext_resource type="Script" path="res://Scripts/compute_forces.gd" id="2_5yn84"]
 [ext_resource type="PackedScene" uid="uid://djqe6qcvbm1qw" path="res://Scenes/plane_scene.tscn" id="3_swi1m"]
+[ext_resource type="Script" path="res://Scripts/main_terrain.gd" id="3_wt4pn"]
 [ext_resource type="PackedScene" uid="uid://dntw0xdlqi03d" path="res://Scenes/terrain.tscn" id="4_5p7s3"]
-[ext_resource type="Shader" uid="uid://b5uw7hmk5lrpe" path="res://Shaders/terrain.tres" id="5_a5e0e"]
-[ext_resource type="Texture2D" uid="uid://dl75v2m60tqnj" path="res://Assets/heightmap_overlay.jpg" id="6_a66ml"]
 
 [sub_resource type="Environment" id="Environment_dlho0"]
 background_mode = 1
 background_color = Color(0.587336, 0.687652, 0.753641, 1)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ktd2l"]
-render_priority = 0
-shader = ExtResource("5_a5e0e")
-shader_parameter/uvx = -35.115
-shader_parameter/uvy = -26.087
-shader_parameter/terrain_height = 50
-shader_parameter/heightmap = ExtResource("6_a66ml")
+background_energy_multiplier = 0.9
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_ap5ey"]
 viewport_path = NodePath("DepthSubViewport")
@@ -25,33 +17,30 @@ viewport_path = NodePath("DepthSubViewport")
 [node name="Main" type="Node3D"]
 script = ExtResource("1_skjnb")
 
-[node name="FollowerCam" type="Camera3D" parent="."]
-transform = Transform3D(-4.37114e-08, -0.5, 0.866025, 0, 0.866025, 0.5, -1, 2.18557e-08, -3.78552e-08, 1, 0.6, 0)
-current = true
-
 [node name="DepthSubViewport" type="SubViewport" parent="."]
 render_target_update_mode = 4
 script = ExtResource("2_5yn84")
 
 [node name="PlaneScene" parent="DepthSubViewport" instance=ExtResource("3_swi1m")]
 
+[node name="FollowerCam" type="Camera3D" parent="."]
+transform = Transform3D(-4.37114e-08, -0.5, 0.866025, 0, 0.866025, 0.5, -1, 2.18557e-08, -3.78552e-08, 1, 0.6, 0)
+current = true
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_dlho0")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(-0.797729, -0.595499, -0.0949143, -0.337197, 0.310027, 0.888921, -0.499926, 0.741123, -0.448118, -9.0095, 16.9456, -26.9887)
-light_color = Color(0.989977, 0.979559, 0.956863, 1)
+transform = Transform3D(0.80966, -0.2379, 0.536521, 0.0508775, 0.939171, 0.339661, -0.58469, -0.247713, 0.772513, 34.9905, 96.1488, -4.00781)
+light_color = Color(0.996481, 0.975169, 0.969646, 1)
 shadow_enabled = true
+directional_shadow_mode = 0
 
 [node name="Terrain" parent="." instance=ExtResource("4_5p7s3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10, 0)
-
-[node name="MeshInstance3D" parent="Terrain" index="0"]
-surface_material_override/0 = SubResource("ShaderMaterial_ktd2l")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, 0)
+script = ExtResource("3_wt4pn")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
 position = Vector2(602, 310)
 texture = SubResource("ViewportTexture_ap5ey")
-
-[editable path="Terrain"]

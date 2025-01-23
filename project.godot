@@ -52,3 +52,7 @@ config/icon="res://Assets/icon.svg"
 
 3d/default_gravity=0.0
 3d/max_physics_steps_per_frame=8
+
+[rendering]
+
+mesh_lod/lod_change/threshold_pixels=1024.0
