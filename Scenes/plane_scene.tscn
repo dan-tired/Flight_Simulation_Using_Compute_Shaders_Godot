@@ -20,6 +20,7 @@ size = Vector2(0.6, 0.6)
 size = Vector3(0.353863, 0.0432459, 0.208984)
 
 [node name="PlaneScene" type="RigidBody3D"]
+mass = 0.005
 script = ExtResource("1_4oic6")
 
 [node name="DepthCam" type="Camera3D" parent="."]

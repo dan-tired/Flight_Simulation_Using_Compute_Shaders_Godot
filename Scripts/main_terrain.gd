@@ -20,6 +20,6 @@ func snap() -> void:
 	player_pos = player.global_transform.origin.snapped(Vector3(snap_step, 0.0, snap_step))
 	global_transform.origin.x = player_pos.x
 	global_transform.origin.z = player_pos.z
-	$MeshInstance3D.get_surface_override_material(0).set("shader_param/uvx", player_pos.x/div)
-	$MeshInstance3D.get_surface_override_material(0).set("shader_param/uvy", player_pos.z/div)
+	$MeshInstance3D.get_surface_override_material(0).set_shader_parameter("uvx", player_pos.x/div)
+	$MeshInstance3D.get_surface_override_material(0).set_shader_parameter("uvy", player_pos.z/div)
 	timer.start()

@@ -1,10 +1,13 @@
+@tool
 extends SubViewport
 
 var rd : RenderingDevice
 var shader : RID
 var pipeline : RID
-var texture_set : RID
+var uniform_set : RID
 var texture_size : Vector2i
+
+var output_buffer : RID
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -21,7 +24,7 @@ func _exit_tree() -> void:
 	RenderingServer.call_on_render_thread(_free_resources)
 
 func _init_compute_code() -> void:
-	# Retrieving the render device
+	# Retrieving the rendering device
 	rd = RenderingServer.get_rendering_device()
 	# Creating the shader
 	var shader_file : Resource = load("res://Shaders/compute_example.glsl")
@@ -29,39 +32,67 @@ func _init_compute_code() -> void:
 	shader = rd.shader_create_from_spirv(shader_spirv)
 	pipeline = rd.compute_pipeline_create(shader)
 	
-	var texture : ViewportTexture = get_texture()
-	var rd_texture = RenderingServer.texture_get_rd_texture(texture.get_rid())
+	print("Shader RID:")
+	print(shader)
 	
-	texture_size = get_texture().get_size()
+	var vp_texture : ViewportTexture = get_texture()
 	
-	render_target_update_mode = UpdateMode.UPDATE_ALWAYS
+	# Copying the vp_texture into a PackedByteArray to pass into the shader as an array
+	var img : Image = vp_texture.get_image()
+	var img_pba : PackedByteArray = img.get_data()
 	
-	assert(rd.texture_is_valid(rd_texture))
+	# Reformatting the texture
+	var fmt := RDTextureFormat.new()
+	fmt.height = rd.texture_get_format(vp_texture.get_rid()).height
+	fmt.width = rd.texture_get_format(vp_texture.get_rid()).width
+	fmt.mipmaps = rd.texture_get_format(vp_texture.get_rid()).mipmaps
+	# These usage bits are used to allow read and write access to the texture
+	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT | RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT
+	fmt.texture_type = rd.texture_get_format(vp_texture.get_rid()).texture_type
+	fmt.depth = rd.texture_get_format(vp_texture.get_rid()).depth
+	fmt.format = rd.texture_get_format(vp_texture.get_rid()).format
 	
-	var uniform := RDUniform.new()
-	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-	uniform.binding = 0
-	uniform.add_id(rd_texture)
+	var input_texture = rd.texture_create(fmt, RDTextureView.new(), [img_pba])
 	
-	texture_set = rd.uniform_set_create([uniform], shader, 0)
+	print("Input texture converted from VP:")
+	print(input_texture)
 	
-	## May need to copy the viewport texture into a new texture
-	## Basically just due to it being a shared texture?
-	#var tf : RDTextureFormat = RDTextureFormat.new()
-	#tf.format = RenderingDevice.DATA_FORMAT_R32_SFLOAT
-	#tf.texture_type = RenderingDevice.TEXTURE_TYPE_2D
-	#tf.width = texture.get_width()
-	#tf.height = texture.get_height()
-	#tf.depth = 1
-	#tf.array_layers = 1
-	#tf.mipmaps = 1
-	#tf.usage_bits = (
-			#RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
-			#RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT |
-			#RenderingDevice.TEXTURE_USAGE_STORAGE_BIT |
-			#RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT |
-			#RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
-	#)
+	var sampler_state := RDSamplerState.new()
+	# This state (unnormalized_uvw) allows me to use pixel coordinates to sample the texture
+	# As opposed to using normalized uvs between 0 and 1
+	sampler_state.unnormalized_uvw = true 
+	var sampler := rd.sampler_create(sampler_state)
+	
+	print("Sampler RID:")
+	print(sampler)
+	
+	# Creating the texture uniform
+	var texture_uniform = RDUniform.new()
+	texture_uniform.binding = 0
+	texture_uniform.add_id(sampler)
+	texture_uniform.add_id(input_texture)
+	texture_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_SAMPLER_WITH_TEXTURE
+	
+	# Creating 2D array for simple output test
+	var array_initialiser = []
+	for i in (texture_size.x / 8) * (texture_size / 8) :
+		array_initialiser.append(0)
+	var output_buffer_pba := PackedInt32Array(array_initialiser).to_byte_array()
+	output_buffer = rd.storage_buffer_create(output_buffer_pba.size(), output_buffer_pba)
+	
+	print("Output buffer for lift values: ")
+	print(output_buffer)
+	
+	# Creating the buffer uniform
+	var buffer_uniform = RDUniform.new()
+	buffer_uniform.binding = 1
+	buffer_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+	buffer_uniform.add_id(output_buffer)
+	
+	uniform_set = rd.uniform_set_create([texture_uniform, buffer_uniform], shader, 0)
+
+	print("Completed uniform set")
+	print(uniform_set)
 
 func _render_process() -> void:
 	# I'll figure out what needs to be pushed up other than the texture size 
@@ -71,9 +102,14 @@ func _render_process() -> void:
 	
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
-	rd.compute_list_bind_uniform_set(compute_list, texture_set, 0)
+	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
 	rd.compute_list_dispatch(compute_list, x_groups, y_groups, 1)
 	rd.compute_list_end()
+	
+	rd.submit()
+	rd.sync()
 
 func _free_resources() -> void :
 	rd.free_rid(shader)
+	rd.free_rid(output_buffer)
+	rd.free_rid(uniform_set)
