@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://b13yybtt2q36y"
+path="res://.godot/imported/compute_example.glsl-b7424e8a7173fc98b476bf4067196c5f.res"
+
+[deps]
+
+source_file="res://Shaders/ComputeShaderFiles/compute_example.glsl"
+dest_files=["res://.godot/imported/compute_example.glsl-b7424e8a7173fc98b476bf4067196c5f.res"]
+
+[params]
+

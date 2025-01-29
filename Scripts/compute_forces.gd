@@ -1,16 +1,42 @@
-@tool
 extends SubViewport
 
 var rd : RenderingDevice
 var shader : RID
 var pipeline : RID
-var uniform_set : RID
 var texture_size : Vector2i
+var texture2Drd : Texture2DRD
 
+var input_texture : RID
+var sampler : RID
 var output_buffer : RID
+var uniform_set : RID
+var fmt : RDTextureFormat
+var img_pba : PackedByteArray
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	render_target_update_mode = UpdateMode.UPDATE_ALWAYS
+	
+	await RenderingServer.frame_post_draw
+	
+	texture_size = get_texture().get_size()
+	
+	var img := get_texture().get_image()
+	img_pba = img.get_data()
+	
+	fmt = RDTextureFormat.new()
+	fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_SRGB
+	fmt.width = texture_size.y
+	fmt.height = texture_size.x
+	fmt.usage_bits = (
+			RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
+			RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT |
+			RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT |
+			RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
+	)
+	
+	img.save_png("test.png")
+	
 	RenderingServer.call_on_render_thread(_init_compute_code)
 	
 	# Don't think I need to be doing anything else here?
@@ -18,53 +44,25 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	RenderingServer.call_on_render_thread(_render_process)
+	#RenderingServer.call_on_render_thread(_render_process)
+	pass
 
 func _exit_tree() -> void:
-	RenderingServer.call_on_render_thread(_free_resources)
+	#RenderingServer.call_on_render_thread(_free_resources)
+	pass
 
 func _init_compute_code() -> void:
 	# Retrieving the rendering device
 	rd = RenderingServer.get_rendering_device()
 	# Creating the shader
-	var shader_file : Resource = load("res://Shaders/compute_example.glsl")
+	var shader_file : Resource = load("res://Shaders/ComputeShaderFiles/compute_example.glsl")
 	var shader_spirv : RDShaderSPIRV = shader_file.get_spirv()
 	shader = rd.shader_create_from_spirv(shader_spirv)
 	pipeline = rd.compute_pipeline_create(shader)
 	
-	print("Shader RID:")
-	print(shader)
+	input_texture = rd.texture_create(fmt, RDTextureView.new(), [img_pba])
 	
-	var vp_texture : ViewportTexture = get_texture()
-	
-	# Copying the vp_texture into a PackedByteArray to pass into the shader as an array
-	var img : Image = vp_texture.get_image()
-	var img_pba : PackedByteArray = img.get_data()
-	
-	# Reformatting the texture
-	var fmt := RDTextureFormat.new()
-	fmt.height = rd.texture_get_format(vp_texture.get_rid()).height
-	fmt.width = rd.texture_get_format(vp_texture.get_rid()).width
-	fmt.mipmaps = rd.texture_get_format(vp_texture.get_rid()).mipmaps
-	# These usage bits are used to allow read and write access to the texture
-	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT | RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT
-	fmt.texture_type = rd.texture_get_format(vp_texture.get_rid()).texture_type
-	fmt.depth = rd.texture_get_format(vp_texture.get_rid()).depth
-	fmt.format = rd.texture_get_format(vp_texture.get_rid()).format
-	
-	var input_texture = rd.texture_create(fmt, RDTextureView.new(), [img_pba])
-	
-	print("Input texture converted from VP:")
-	print(input_texture)
-	
-	var sampler_state := RDSamplerState.new()
-	# This state (unnormalized_uvw) allows me to use pixel coordinates to sample the texture
-	# As opposed to using normalized uvs between 0 and 1
-	sampler_state.unnormalized_uvw = true 
-	var sampler := rd.sampler_create(sampler_state)
-	
-	print("Sampler RID:")
-	print(sampler)
+	var sampler = create_sampler()
 	
 	# Creating the texture uniform
 	var texture_uniform = RDUniform.new()
@@ -75,13 +73,10 @@ func _init_compute_code() -> void:
 	
 	# Creating 2D array for simple output test
 	var array_initialiser = []
-	for i in (texture_size.x / 8) * (texture_size / 8) :
+	for i in (texture_size.x / 8) * (texture_size.x / 8) :
 		array_initialiser.append(0)
 	var output_buffer_pba := PackedInt32Array(array_initialiser).to_byte_array()
 	output_buffer = rd.storage_buffer_create(output_buffer_pba.size(), output_buffer_pba)
-	
-	print("Output buffer for lift values: ")
-	print(output_buffer)
 	
 	# Creating the buffer uniform
 	var buffer_uniform = RDUniform.new()
@@ -109,7 +104,17 @@ func _render_process() -> void:
 	rd.submit()
 	rd.sync()
 
+func create_sampler() -> RID :
+	var sampler_state := RDSamplerState.new()
+	# This state (unnormalized_uvw) allows me to use pixel coordinates to sample the texture
+	# As opposed to using normalized uvs between 0 and 1
+	sampler_state.unnormalized_uvw = true 
+	sampler = rd.sampler_create(sampler_state)
+	return sampler
+
 func _free_resources() -> void :
 	rd.free_rid(shader)
 	rd.free_rid(output_buffer)
 	rd.free_rid(uniform_set)
+	rd.free_rid(input_texture)
+	rd.free_rid(sampler)

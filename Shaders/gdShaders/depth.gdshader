@@ -4,10 +4,12 @@ render_mode unshaded, fog_disabled, cull_back;
 
 uniform sampler2D depth_texture : source_color, hint_depth_texture;
 uniform sampler2D normal_rough_texture : hint_normal_roughness_texture;
+uniform sampler2D transparency : hint_screen_texture;
+
 
 void vertex() {
 	//POSITION = vec4(VERTEX.xy, 1.0, 1.0);
-	COLOR = vec4(COLOR);
+	COLOR.w = 0.f;
 }
 
 void fragment() {
@@ -24,6 +26,8 @@ void fragment() {
 	vec3 normals_view_raw = normal_rough.xyz; // Normals in view space, in [0.0, 1.0] range
 	vec3 normals_view_remapped = normals_view_raw.xyz * 2.0 - 1.0;  // Normals in view space, in [-1.0, 1.0] range
 	vec3 normals_world = (INV_VIEW_MATRIX * vec4(normals_view_remapped, 0.0)).xyz;
+	
+	vec4 transparent = texture(transparency, SCREEN_UV);
 
 	// Visualize linear depth
 	//ALBEDO.rgb = vec3(fract(linear_depth));
@@ -31,10 +35,9 @@ void fragment() {
 	//ALBEDO.rgb = fract(world_position).xyz;
 	// Visualize world normals
 	// ALBEDO.rgb = normals_world;
-
-	// Remove visualisation
-	ALBEDO.rgb = normals_world;
-	ALPHA = 1.0;
+	
+	ALBEDO.rgb = normal_rough.xyz;
+	ALPHA = transparent.w;
 
 }
 

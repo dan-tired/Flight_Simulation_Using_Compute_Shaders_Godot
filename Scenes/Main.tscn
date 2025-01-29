@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dw41nmvofjv0c"]
+[gd_scene load_steps=7 format=3 uid="uid://dw41nmvofjv0c"]
 
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_skjnb"]
 [ext_resource type="Script" path="res://Scripts/compute_forces.gd" id="2_5yn84"]
@@ -11,13 +11,11 @@ background_mode = 1
 background_color = Color(0.587336, 0.687652, 0.753641, 1)
 background_energy_multiplier = 0.9
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_ap5ey"]
-viewport_path = NodePath("DepthSubViewport")
-
 [node name="Main" type="Node3D"]
 script = ExtResource("1_skjnb")
 
 [node name="DepthSubViewport" type="SubViewport" parent="."]
+transparent_bg = true
 render_target_update_mode = 4
 script = ExtResource("2_5yn84")
 
@@ -39,8 +37,3 @@ directional_shadow_mode = 0
 [node name="Terrain" parent="." instance=ExtResource("4_5p7s3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.78653, 0)
 script = ExtResource("3_wt4pn")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(602, 310)
-texture = SubResource("ViewportTexture_ap5ey")

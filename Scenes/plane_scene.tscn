@@ -5,14 +5,12 @@
 [ext_resource type="Shader" path="res://Shaders/gdShaders/depth.gdshader" id="2_0t7rk"]
 [ext_resource type="Script" path="res://Scripts/ps_userControl.gd" id="3_7pyr4"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_l3jo1"]
-resource_local_to_scene = true
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xcdt7"]
 render_priority = 0
 shader = ExtResource("2_0t7rk")
 
 [sub_resource type="QuadMesh" id="QuadMesh_nwcd6"]
-resource_local_to_scene = true
-material = SubResource("ShaderMaterial_l3jo1")
+material = SubResource("ShaderMaterial_xcdt7")
 flip_faces = true
 size = Vector2(0.6, 0.6)
 
@@ -24,7 +22,7 @@ mass = 0.005
 script = ExtResource("1_4oic6")
 
 [node name="DepthCam" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.56514, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.573634, 0)
 projection = 1
 current = true
 fov = 30.0
