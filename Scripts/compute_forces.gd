@@ -4,7 +4,6 @@ var rd : RenderingDevice
 var shader : RID
 var pipeline : RID
 var texture_size : Vector2i
-var texture2Drd : Texture2DRD
 
 var input_texture : RID
 var sampler : RID
@@ -13,11 +12,45 @@ var uniform_set : RID
 var fmt : RDTextureFormat
 var img_pba : PackedByteArray
 
+var ready_complete : bool
+
+signal compute_code_ready
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	render_target_update_mode = UpdateMode.UPDATE_ALWAYS
 	
 	await RenderingServer.frame_post_draw
+	
+	RenderingServer.call_on_render_thread(_init_compute_code)
+	
+	compute_code_ready.emit()
+	ready_complete = true
+	
+	# Don't think I need to be doing anything else here?
+	# I guess we'll find out soon enough!
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta: float) -> void:
+	if !ready_complete :
+		await compute_code_ready
+	RenderingServer.call_on_render_thread(_render_process)
+	pass
+
+func _exit_tree() -> void:
+	RenderingServer.call_on_render_thread(_free_resources)
+	pass
+
+func _init_compute_code() -> void:
+	# Retrieving the rendering device
+	rd = RenderingServer.get_rendering_device()
+	# Creating the shader
+	var shader_file : Resource = load("res://Shaders/ComputeShaderFiles/compute_example.glsl")
+	var shader_spirv : RDShaderSPIRV = shader_file.get_spirv()
+	shader = rd.shader_create_from_spirv(shader_spirv)
+	pipeline = rd.compute_pipeline_create(shader)
+	
+	#print(pipeline)
 	
 	texture_size = get_texture().get_size()
 	
@@ -35,34 +68,9 @@ func _ready() -> void:
 			RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
 	)
 	
-	img.save_png("test.png")
-	
-	RenderingServer.call_on_render_thread(_init_compute_code)
-	
-	# Don't think I need to be doing anything else here?
-	# I guess we'll find out soon enough!
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	#RenderingServer.call_on_render_thread(_render_process)
-	pass
-
-func _exit_tree() -> void:
-	#RenderingServer.call_on_render_thread(_free_resources)
-	pass
-
-func _init_compute_code() -> void:
-	# Retrieving the rendering device
-	rd = RenderingServer.get_rendering_device()
-	# Creating the shader
-	var shader_file : Resource = load("res://Shaders/ComputeShaderFiles/compute_example.glsl")
-	var shader_spirv : RDShaderSPIRV = shader_file.get_spirv()
-	shader = rd.shader_create_from_spirv(shader_spirv)
-	pipeline = rd.compute_pipeline_create(shader)
-	
 	input_texture = rd.texture_create(fmt, RDTextureView.new(), [img_pba])
 	
-	var sampler = create_sampler()
+	sampler = rid_create_sampler()
 	
 	# Creating the texture uniform
 	var texture_uniform = RDUniform.new()
@@ -85,15 +93,16 @@ func _init_compute_code() -> void:
 	buffer_uniform.add_id(output_buffer)
 	
 	uniform_set = rd.uniform_set_create([texture_uniform, buffer_uniform], shader, 0)
+	
+	#print(uniform_set)
 
-	print("Completed uniform set")
-	print(uniform_set)
 
 func _render_process() -> void:
-	# I'll figure out what needs to be pushed up other than the texture size 
 	
 	var x_groups : int = (texture_size.x - 1) / 8 + 1
 	var y_groups : int = (texture_size.y - 1) / 8 + 1
+	
+	rd.texture_update(input_texture,0,get_texture().get_image().get_data())
 	
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
@@ -103,8 +112,20 @@ func _render_process() -> void:
 	
 	rd.submit()
 	rd.sync()
+	
+	var out := rd.buffer_get_data(output_buffer)
+	var out_array = out.to_int32_array()
+	
+	for i in out_array.size() :
+		var printer = str(out_array[i]) + ","
+		printraw(printer)
+		if i % 64 == 63 :
+			printraw("\n")
+	
+	rd.buffer_clear(output_buffer,0,out.size())
+	
 
-func create_sampler() -> RID :
+func rid_create_sampler() -> RID :
 	var sampler_state := RDSamplerState.new()
 	# This state (unnormalized_uvw) allows me to use pixel coordinates to sample the texture
 	# As opposed to using normalized uvs between 0 and 1
@@ -118,3 +139,4 @@ func _free_resources() -> void :
 	rd.free_rid(uniform_set)
 	rd.free_rid(input_texture)
 	rd.free_rid(sampler)
+	rd.free_rid(pipeline)
