@@ -36,7 +36,7 @@ void fragment() {
 	// Visualize world normals
 	// ALBEDO.rgb = normals_world;
 	
-	ALBEDO.rgb = normal_rough.xyz;
+	ALBEDO.rgb = normals_world.xyz;
 	ALPHA = transparent.w;
 
 }

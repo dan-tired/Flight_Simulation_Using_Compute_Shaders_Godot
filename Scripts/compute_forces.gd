@@ -1,5 +1,7 @@
 extends SubViewport
 
+@export var coefficientOfLift : float
+
 var rd : RenderingDevice
 var shader : RID
 var pipeline : RID
@@ -14,11 +16,15 @@ var img_pba : PackedByteArray
 
 var ready_complete : bool
 
+var plane : RigidBody3D
+
 signal compute_code_ready
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	render_target_update_mode = UpdateMode.UPDATE_ALWAYS
+	
+	plane = get_node("PlaneScene")
 	
 	await RenderingServer.frame_post_draw
 	
@@ -32,8 +38,10 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	
 	if !ready_complete :
 		await compute_code_ready
+	
 	RenderingServer.call_on_render_thread(_render_process)
 	pass
 
@@ -81,7 +89,7 @@ func _init_compute_code() -> void:
 	
 	# Creating 2D array for simple output test
 	var array_initialiser = []
-	for i in (texture_size.x / 8) * (texture_size.x / 8) :
+	for i in (texture_size.x / 8) * (texture_size.y / 8) * 3:
 		array_initialiser.append(0)
 	var output_buffer_pba := PackedInt32Array(array_initialiser).to_byte_array()
 	output_buffer = rd.storage_buffer_create(output_buffer_pba.size(), output_buffer_pba)
@@ -104,6 +112,28 @@ func _render_process() -> void:
 	
 	rd.texture_update(input_texture,0,get_texture().get_image().get_data())
 	
+	var pba := rd.buffer_get_data(output_buffer)
+	
+	var input_array = pba.to_int32_array()
+	
+	# Passing in the velocity of the plane
+	input_array[0] = plane.linear_velocity.x
+	input_array[1] = plane.linear_velocity.y
+	input_array[2] = plane.linear_velocity.z
+	
+	# Passing in the coefficient of lift - users can set this themselves
+	# They can do this experimentally or based on research
+	input_array[3] = coefficientOfLift
+	
+	# Passing in the height of the plane for calculating air density
+	input_array[4] = plane.global_position.y
+	
+	pba = input_array.to_byte_array()
+	
+	# Angle of attack needs to be calculated from the vector normals
+	
+	rd.buffer_update(output_buffer, 0, pba.size(), pba)
+	
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
 	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
@@ -113,16 +143,18 @@ func _render_process() -> void:
 	rd.submit()
 	rd.sync()
 	
-	var out := rd.buffer_get_data(output_buffer)
-	var out_array = out.to_int32_array()
+	pba = rd.buffer_get_data(output_buffer)
+	var out_array = pba.to_int32_array()
 	
-	for i in out_array.size() :
-		var printer = str(out_array[i]) + ","
-		printraw(printer)
-		if i % 64 == 63 :
-			printraw("\n")
+	# This only prints to your terminal when you run godot from your terminal
+	# But it works! And when it runs you can see the outline of the plane forming in the numbers
+	#for i in out_array.size() :
+		#var printer = str(out_array[i]) + ","
+		#printraw(printer)
+		#if i % 64 == 63 :
+			#printraw("\n")
 	
-	rd.buffer_clear(output_buffer,0,out.size())
+	rd.buffer_clear(output_buffer,0,pba.size())
 	
 
 func rid_create_sampler() -> RID :

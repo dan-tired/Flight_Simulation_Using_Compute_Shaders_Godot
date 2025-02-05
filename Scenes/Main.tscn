@@ -35,5 +35,4 @@ shadow_enabled = true
 directional_shadow_mode = 0
 
 [node name="Terrain" parent="." instance=ExtResource("4_5p7s3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.78653, 0)
 script = ExtResource("3_wt4pn")

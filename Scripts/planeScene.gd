@@ -1,8 +1,10 @@
 extends RigidBody3D
 
-const THRUST_ACCEL : float = 1
+const THRUST_ACCEL : float = 0.05
 
-@onready var thrust : float = 0.0
+var thrust : float = 0.0
+
+var direction : Vector3 = Vector3(-1.0, 0.0, 0.0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
@@ -13,14 +15,17 @@ func _physics_process(delta: float) -> void:
 		thrust -= THRUST_ACCEL * delta
 	else :
 		if thrust >= 0.0 :
-			thrust -= 0.5 * THRUST_ACCEL * delta
+			thrust -= 2 * THRUST_ACCEL * delta
 		else :
 			thrust = 0.0
 	
-	var direction : Vector3 = $PlaneBody/Front.global_position - $PlaneBody.global_position
+	direction = $PlaneBody/Front.global_position - $PlaneBody.global_position
 	
 	direction = direction.normalized()
 	
-	global_position += direction * thrust * delta
+	#linear_velocity = (direction * thrust * delta) + get_gravity()
+	
+	apply_central_force(direction * thrust)
 	
 	#print(global_position)
+	
