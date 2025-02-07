@@ -26,6 +26,9 @@ void main() {
     // Altitude for calculating atmospheric density
     float altitude = storage_buffer.data[4];
 
+    // maximum value for lift coefficient
+    float maxLiftCoef = storage_buffer.data[5];
+
     // Currently I am defining "wind" to be the direction opposite to the direction of travel
     // Aerodynamic force is also dependent on the velocity and mass of the fluid, not the object
         // Meaning, we need to be using windVel in lift calculations
@@ -42,7 +45,13 @@ void main() {
     // The angle of attack of the "wind"
     float AoA = acos(dot(wingDir, windVel));
 
-    
+    float speed = length(windVel);
+
+    liftCoef = 
+
+    float lift = liftCoef * 0.5 * speed * speed;
+
+
 
     // Test code, delete when some other output can be gotten from the shader
     //if(texel_col.w > 0.0) {
