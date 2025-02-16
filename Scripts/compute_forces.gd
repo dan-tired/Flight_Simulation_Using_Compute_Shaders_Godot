@@ -9,6 +9,7 @@ var texture_size : Vector2i
 
 var input_texture : RID
 var sampler : RID
+var input_buffer : RID
 var output_buffer : RID
 var uniform_set : RID
 var fmt : RDTextureFormat
@@ -17,6 +18,7 @@ var img_pba : PackedByteArray
 var ready_complete : bool
 
 var plane : RigidBody3D
+var camSize : float
 
 signal compute_code_ready
 
@@ -25,6 +27,10 @@ func _ready() -> void:
 	render_target_update_mode = UpdateMode.UPDATE_ALWAYS
 	
 	plane = get_node("PlaneScene")
+	
+	var cam : Camera3D = plane.get_child(0)
+	
+	camSize = cam.size
 	
 	await RenderingServer.frame_post_draw
 	
@@ -87,20 +93,32 @@ func _init_compute_code() -> void:
 	texture_uniform.add_id(input_texture)
 	texture_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_SAMPLER_WITH_TEXTURE
 	
-	# Creating 2D array for simple output test
+	# Creating array for input
 	var array_initialiser = []
-	for i in (texture_size.x / 8) * (texture_size.y / 8) * 3:
+	for i in 7 :
+		array_initialiser.append(0)
+	var input_buffer_pba := PackedInt32Array(array_initialiser).to_byte_array()
+	input_buffer = rd.storage_buffer_create(input_buffer_pba.size(), input_buffer_pba)
+	
+	# Creating 2D array for output
+	array_initialiser = []
+	for i in (texture_size.x / 8) * (texture_size.y / 8):
 		array_initialiser.append(0)
 	var output_buffer_pba := PackedInt32Array(array_initialiser).to_byte_array()
 	output_buffer = rd.storage_buffer_create(output_buffer_pba.size(), output_buffer_pba)
 	
 	# Creating the buffer uniform
-	var buffer_uniform = RDUniform.new()
-	buffer_uniform.binding = 1
-	buffer_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
-	buffer_uniform.add_id(output_buffer)
+	var input_buf_uniform := RDUniform.new()
+	input_buf_uniform.binding = 1
+	input_buf_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+	input_buf_uniform.add_id(input_buffer)
 	
-	uniform_set = rd.uniform_set_create([texture_uniform, buffer_uniform], shader, 0)
+	var output_buf_uniform := RDUniform.new()
+	output_buf_uniform.binding = 2
+	output_buf_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+	output_buf_uniform.add_id(output_buffer)
+	
+	uniform_set = rd.uniform_set_create([texture_uniform, input_buf_uniform, output_buf_uniform], shader, 0)
 	
 	#print(uniform_set)
 
@@ -112,9 +130,9 @@ func _render_process() -> void:
 	
 	rd.texture_update(input_texture,0,get_texture().get_image().get_data())
 	
-	var pba := rd.buffer_get_data(output_buffer)
+	var pba := rd.buffer_get_data(input_buffer)
 	
-	var input_array = pba.to_int32_array()
+	var input_array = pba.to_float32_array()
 	
 	# Passing in the velocity of the plane
 	input_array[0] = plane.linear_velocity.x
@@ -128,11 +146,17 @@ func _render_process() -> void:
 	# Passing in the height of the plane for calculating air density
 	input_array[4] = plane.global_position.y
 	
+	# Passing in the camera size
+	input_array[5] = camSize
+	
+	# Passing in the texture dimensions (square image so only one value will do)
+	input_array[6] = texture_size.x;
+	
 	pba = input_array.to_byte_array()
 	
 	# Angle of attack needs to be calculated from the vector normals
 	
-	rd.buffer_update(output_buffer, 0, pba.size(), pba)
+	rd.buffer_update(input_buffer, 0, pba.size(), pba)
 	
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
@@ -148,11 +172,11 @@ func _render_process() -> void:
 	
 	# This only prints to your terminal when you run godot from your terminal
 	# But it works! And when it runs you can see the outline of the plane forming in the numbers
-	#for i in out_array.size() :
-		#var printer = str(out_array[i]) + ","
-		#printraw(printer)
-		#if i % 64 == 63 :
-			#printraw("\n")
+	for i in out_array.size() :
+		var printer = str(out_array[i]) + ","
+		printraw(printer)
+		if i % 64 == 63 :
+			printraw("\n")
 	
 	rd.buffer_clear(output_buffer,0,pba.size())
 	
@@ -167,6 +191,7 @@ func rid_create_sampler() -> RID :
 
 func _free_resources() -> void :
 	rd.free_rid(shader)
+	rd.free_rid(input_buffer)
 	rd.free_rid(output_buffer)
 	rd.free_rid(uniform_set)
 	rd.free_rid(input_texture)

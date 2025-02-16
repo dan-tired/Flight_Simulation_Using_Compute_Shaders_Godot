@@ -8,18 +8,25 @@
 
 [sub_resource type="Environment" id="Environment_dlho0"]
 background_mode = 1
-background_color = Color(0.587336, 0.687652, 0.753641, 1)
-background_energy_multiplier = 0.9
+background_color = Color(0.432143, 0.724847, 0.844916, 1)
+background_energy_multiplier = 1.56
+ambient_light_color = Color(0.901428, 0.901428, 0.901428, 1)
+ambient_light_energy = 0.0
+tonemap_exposure = 0.4
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_skjnb")
 
 [node name="DepthSubViewport" type="SubViewport" parent="."]
+own_world_3d = true
 transparent_bg = true
 render_target_update_mode = 4
 script = ExtResource("2_5yn84")
+coefficientOfLift = 0.17
 
 [node name="PlaneScene" parent="DepthSubViewport" instance=ExtResource("3_swi1m")]
+
+[node name="PlaneScene" parent="." instance=ExtResource("3_swi1m")]
 
 [node name="FollowerCam" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, -0.5, 0.866025, 0, 0.866025, 0.5, -1, 2.18557e-08, -3.78552e-08, 1, 0.6, 0)
@@ -29,8 +36,12 @@ current = true
 environment = SubResource("Environment_dlho0")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(0.80966, -0.2379, 0.536521, 0.0508775, 0.939171, 0.339661, -0.58469, -0.247713, 0.772513, 34.9905, 96.1488, -4.00781)
+transform = Transform3D(-1, 8.74228e-08, 0, -4.72293e-08, -0.54024, 0.841511, 7.35672e-08, 0.841511, 0.54024, 34.9321, 96.3029, -4.00781)
 light_color = Color(0.996481, 0.975169, 0.969646, 1)
+light_energy = 1.492
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.0
+light_angular_distance = 22.98
 shadow_enabled = true
 directional_shadow_mode = 0
 

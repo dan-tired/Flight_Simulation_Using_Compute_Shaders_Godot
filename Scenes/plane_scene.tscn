@@ -12,7 +12,7 @@ shader = ExtResource("2_0t7rk")
 [sub_resource type="QuadMesh" id="QuadMesh_nwcd6"]
 material = SubResource("ShaderMaterial_xcdt7")
 flip_faces = true
-size = Vector2(0.6, 0.6)
+size = Vector2(0.7, 0.7)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vkqst"]
 size = Vector3(0.353863, 0.0432459, 0.208984)
@@ -26,11 +26,12 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.
 projection = 1
 current = true
 fov = 30.0
-size = 0.5
+size = 0.65
 near = 0.001
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DepthCam"]
 transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, -7.82773e-09, -0.179078)
+cast_shadow = 0
 mesh = SubResource("QuadMesh_nwcd6")
 skeleton = NodePath("../..")
 

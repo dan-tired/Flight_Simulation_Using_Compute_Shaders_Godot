@@ -1,30 +1,70 @@
 #[compute]
 #version 450
+#extension GL_EXT_shader_atomic_float : enable
 
 layout(set = 0, binding = 0) uniform sampler2D normalImage;
 
-layout(set = 0, binding = 1, std430) buffer StorageBuf {
-    int data[];
+layout(set = 0, binding = 1, std430) buffer InputBuf {
+    float data[];
 }
-storage_buffer;
+input_buffer;
+
+layout(set = 0, binding = 2, std430) buffer OutputBuf {
+    float data[];
+}
+output_buffer;
 
 layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+void fragAerodynamicForce(in float speed, in vec3 norm, in float pressure, in float pixelSize, out vec3 TotalAerodynamicForce) {
+    // Total Aerodynamic Force = Sum(pressure * vector normal * fragment area)
+    // We assume that pressure is proportional to velocity squared
+
+    float pressureWithSpeed = pressure * pow(speed, 2);
+
+    TotalAerodynamicForce = - (norm * pressureWithSpeed * pixelSize);
+}
+
+void fragLiftForce(in vec3 norm, in float angle, in float liftCoef, in float pressure, in float speed, in float pixelSize, out vec3 LiftForce) {
+    vec3 fragLift;
+
+    // Specific gas constant of dry air
+    float R = 287.052874f;
+
+    // Average temperature on earth, 2023
+    // https://www.climate.gov/news-features/understanding-climate/climate-change-global-temperature
+    float avgTempK = 274.33f;
+
+    float density = pressure / (R * avgTempK);
+
+    LiftForce = -(density * 0.5 * liftCoef * pow(speed, 2) * pixelSize * norm);
+}
 
 void main() {
     vec4 texel_col = texture(normalImage, vec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y));
 
+    if (texel_col.a == 0.f) {
+        return;
+    }
+
     // The linear velocity of the plane
     vec3 vel = vec3(
-        storage_buffer.data[0],
-        storage_buffer.data[1],
-        storage_buffer.data[2]
+        input_buffer.data[0],
+        input_buffer.data[1],
+        input_buffer.data[2]
     );
 
     // User defined lift coefficient
-    float liftCoef = storage_buffer.data[3];
+    float liftCoef = input_buffer.data[3];
 
     // Altitude for calculating atmospheric density
-    float altitude = storage_buffer.data[4];
+    float altitude = input_buffer.data[4];
+
+    // Camera size for approximate pixel area
+    float camSize = input_buffer.data[5];
+
+    // Pixel width of texture
+    float texWidth = input_buffer.data[6];
 
     // Currently I am defining "wind" to be the direction opposite to the direction of travel
     // Aerodynamic force is also dependent on the velocity and mass of the fluid, not the object
@@ -42,10 +82,20 @@ void main() {
     // The angle of attack of the "wind"
     float AoA = acos(dot(wingDir, windVel));
 
-    
+    // Air pressure at sea level is 101,325 Pa
+    // Acceleration due to gravity is 9.8 m/s^2
+    // Molar mass of dry air is 0.02896968 kg/mol
+    // Universal Gas Constant is 8.314462618 J/(mol * K)
+    // Avg temp at sea level is 288.15 K
+    float constants = (9.8 * 0.02896968)/(288.15 * 8.314462618);
+    float pressure = 101325.f * exp(-(altitude * constants));
+
+    vec3 liftForce;
+    fragLiftForce(texel_col.xyz, AoA, liftCoef, pressure, length(windVel), camSize/texWidth, liftForce);
+
 
     // Test code, delete when some other output can be gotten from the shader
-    //if(texel_col.w > 0.0) {
-    //    atomicAdd(storage_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
-    //}
+    if(texel_col.w > 0.0) {
+        atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
+    }
 }

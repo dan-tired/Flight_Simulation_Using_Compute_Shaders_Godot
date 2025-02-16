@@ -1,15 +1,15 @@
 [gd_scene load_steps=5 format=3 uid="uid://dntw0xdlqi03d"]
 
 [ext_resource type="ArrayMesh" uid="uid://bt2kjj2u282gn" path="res://Assets/clipmap_mesh_big.obj" id="1_f3q0x"]
-[ext_resource type="Shader" uid="uid://b5uw7hmk5lrpe" path="res://Shaders/terrain.tres" id="2_o51w8"]
+[ext_resource type="Shader" path="res://Shaders/gdShaders/terrain.gdshader" id="2_ja2gm"]
 [ext_resource type="Texture2D" uid="uid://da33kjnt385cg" path="res://Assets/real_heightmap.jpg" id="3_gwwy6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bbcyh"]
 render_priority = 0
-shader = ExtResource("2_o51w8")
-shader_parameter/uvx = 2.375e-05
+shader = ExtResource("2_ja2gm")
+shader_parameter/terrian_height = 50.0
+shader_parameter/uvx = 4.75e-06
 shader_parameter/uvy = 2.375e-05
-shader_parameter/terrain_height = 61
 shader_parameter/heightmap = ExtResource("3_gwwy6")
 
 [node name="Terrain" type="Node3D"]
