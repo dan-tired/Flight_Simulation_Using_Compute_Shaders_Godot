@@ -24,9 +24,10 @@ render_target_update_mode = 4
 script = ExtResource("2_5yn84")
 coefficientOfLift = 0.17
 
-[node name="PlaneScene" parent="DepthSubViewport" instance=ExtResource("3_swi1m")]
+[node name="PlaneModel" parent="DepthSubViewport" instance=ExtResource("3_swi1m")]
 
 [node name="PlaneScene" parent="." instance=ExtResource("3_swi1m")]
+mass = 0.05
 
 [node name="FollowerCam" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, -0.5, 0.866025, 0, 0.866025, 0.5, -1, 2.18557e-08, -3.78552e-08, 1, 0.6, 0)
@@ -36,7 +37,7 @@ current = true
 environment = SubResource("Environment_dlho0")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(-1, 8.74228e-08, 0, -4.72293e-08, -0.54024, 0.841511, 7.35672e-08, 0.841511, 0.54024, 34.9321, 96.3029, -4.00781)
+transform = Transform3D(-1, 8.74228e-08, -3.32297e-14, -6.29206e-08, -0.719727, 0.694257, 6.06938e-08, 0.694257, 0.719727, 34.9321, 96.3029, -4.00781)
 light_color = Color(0.996481, 0.975169, 0.969646, 1)
 light_energy = 1.492
 light_indirect_energy = 0.0

@@ -12,7 +12,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	var planeBody = $DepthSubViewport/PlaneScene/PlaneBody
+	var planeBody = $PlaneScene/PlaneBody
 	var planeForward : Vector3 = planeBody.get_node("Front").global_position - planeBody.global_position
 	var planeUp : Vector3 = Vector3(0.0, 1.0, 0.0)
 	

@@ -3,20 +3,25 @@ extends SubViewport
 @export var coefficientOfLift : float
 
 var rd : RenderingDevice
+var texture_size : Vector2i
+
+var totalForce : Vector3 = Vector3()
+
 var shader : RID
 var pipeline : RID
-var texture_size : Vector2i
 
 var input_texture : RID
 var sampler : RID
 var input_buffer : RID
 var output_buffer : RID
 var uniform_set : RID
+
 var fmt : RDTextureFormat
 var img_pba : PackedByteArray
 
 var ready_complete : bool
 
+var plane_model : RigidBody3D
 var plane : RigidBody3D
 var camSize : float
 
@@ -26,9 +31,10 @@ signal compute_code_ready
 func _ready() -> void:
 	render_target_update_mode = UpdateMode.UPDATE_ALWAYS
 	
-	plane = get_node("PlaneScene")
+	plane_model = get_node("PlaneModel")
+	plane = get_parent().get_node("PlaneScene")
 	
-	var cam : Camera3D = plane.get_child(0)
+	var cam : Camera3D = plane_model.get_child(0)
 	
 	camSize = cam.size
 	
@@ -49,11 +55,17 @@ func _process(_delta: float) -> void:
 		await compute_code_ready
 	
 	RenderingServer.call_on_render_thread(_render_process)
-	pass
+	
+	print("frame")
+	print(plane.linear_velocity)
+	print(totalForce.length())
+	print(totalForce)
+	print()
+	plane.apply_central_force(totalForce)
+	
 
 func _exit_tree() -> void:
 	RenderingServer.call_on_render_thread(_free_resources)
-	pass
 
 func _init_compute_code() -> void:
 	# Retrieving the rendering device
@@ -134,7 +146,7 @@ func _render_process() -> void:
 	
 	var input_array = pba.to_float32_array()
 	
-	# Passing in the velocity of the plane
+	# Passing in the velocity of the plane_model
 	input_array[0] = plane.linear_velocity.x
 	input_array[1] = plane.linear_velocity.y
 	input_array[2] = plane.linear_velocity.z
@@ -168,15 +180,23 @@ func _render_process() -> void:
 	rd.sync()
 	
 	pba = rd.buffer_get_data(output_buffer)
-	var out_array = pba.to_int32_array()
+	var out_array = pba.to_float32_array()
+	
+	for i in len(out_array) :
+		if i % 3 == 0 :
+			totalForce.x += out_array[i]
+		elif i % 3 == 1 :
+			totalForce.y += out_array[i]
+		else :
+			totalForce.z += out_array[i]
 	
 	# This only prints to your terminal when you run godot from your terminal
-	# But it works! And when it runs you can see the outline of the plane forming in the numbers
-	for i in out_array.size() :
-		var printer = str(out_array[i]) + ","
-		printraw(printer)
-		if i % 64 == 63 :
-			printraw("\n")
+	# But it works! And when it runs you can see the outline of the plane_model forming in the numbers
+	#for i in out_array.size() :
+		#var printer = str(out_array[i]) + ","
+		#printraw(printer)
+		#if i % 64 == 63 :
+			#printraw("\n")
 	
 	rd.buffer_clear(output_buffer,0,pba.size())
 	

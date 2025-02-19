@@ -1,7 +1,7 @@
 extends Node3D
 
 var timer : Timer = Timer.new()
-@onready var player : Node3D = get_parent().get_node("DepthSubViewport/PlaneScene")
+@onready var player : Node3D = get_parent().get_node("PlaneScene")
 var snap_step : int = 20
 var player_pos : Vector3 # This is the player
 

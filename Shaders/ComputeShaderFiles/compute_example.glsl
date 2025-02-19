@@ -37,7 +37,8 @@ void fragLiftForce(in vec3 norm, in float angle, in float liftCoef, in float pre
 
     float density = pressure / (R * avgTempK);
 
-    LiftForce = -(density * 0.5 * liftCoef * pow(speed, 2) * pixelSize * norm);
+    //LiftForce = (density * 0.5 * liftCoef * pow(speed, 2) * pixelSize * norm);
+    LiftForce = (density * 0.5 * liftCoef * pow(speed, 2) * pixelSize * vec3(0.0f, 1.0f, 0.0f));
 }
 
 void main() {
@@ -90,12 +91,17 @@ void main() {
     float constants = (9.8 * 0.02896968)/(288.15 * 8.314462618);
     float pressure = 101325.f * exp(-(altitude * constants));
 
-    vec3 liftForce;
+    vec3 liftForce = vec3(0.0f, 0.0f, 0.0f);
     fragLiftForce(texel_col.xyz, AoA, liftCoef, pressure, length(windVel), camSize/texWidth, liftForce);
 
-
     // Test code, delete when some other output can be gotten from the shader
-    if(texel_col.w > 0.0) {
-        atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
+    //if(texel_col.w > 0.0) {
+    //    atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
+    //}
+
+    if(texel_col.w > 0.0 && dot(texel_col.xyz, vel) < 0.0f) {
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64) + 0], liftForce.x);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64) + 1], liftForce.y);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64) + 2], liftForce.z);
     }
 }
