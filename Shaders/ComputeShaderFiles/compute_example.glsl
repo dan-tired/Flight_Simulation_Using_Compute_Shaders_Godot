@@ -49,6 +49,8 @@ void main() {
         return;
     }
 
+    vec3 norm = normalize((texel_col.xyz * 2.0f) - 1.0f);
+
     // The linear velocity of the plane
     vec3 vel = vec3(
         input_buffer.data[0],
@@ -79,7 +81,7 @@ void main() {
     // From the above, we calculate the line of intersection 
     // (defined as the normal of the plane formed by the normal vectors of the two planes)
     // We use this to calculate the angle of attack of the wing
-    vec3 wingDir = normalize(cross(planeIntersectNorm, texel_col.xyz));
+    vec3 wingDir = normalize(cross(planeIntersectNorm, norm));
 
     // The angle of attack of the "wind"
     float AoA = acos(dot(wingDir, windVel));
@@ -93,14 +95,14 @@ void main() {
     float pressure = 101325.f * exp(-(altitude * constants));
 
     vec3 liftForce = vec3(0.0f, 0.0f, 0.0f);
-    fragLiftForce(normalize(texel_col.xyz), AoA, liftCoef, pressure, length(windVel), camSize/texWidth, liftForce);
+    fragLiftForce(norm, AoA, liftCoef, pressure, length(windVel), camSize/texWidth, liftForce);
 
     // Test code, delete when some other output can be gotten from the shader
-    if(texel_col.w > 0.0 && dot(texel_col.xyz, vec3(0.0, 1.0, 0.0)) < 0.0f) {
+    if(texel_col.w > 0.0 && dot(norm, vec3(0.0, 1.0, 0.0)) < 0.0f) {
         atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
     }
 
-    //if(texel_col.w > 0.0 && dot(texel_col.xyz, vel) < 0.0f) {
+    //if(texel_col.w > 0.0 && dot(norm, vel) < 0.0f) {
     //    atomicAdd(output_buffer.data[((gl_WorkGroupID.y * 3) + gl_WorkGroupID.x * 64) + 0], liftForce.x);
     //    atomicAdd(output_buffer.data[((gl_WorkGroupID.y * 3) + gl_WorkGroupID.x * 64) + 1], liftForce.y);
     //    atomicAdd(output_buffer.data[((gl_WorkGroupID.y * 3) + gl_WorkGroupID.x * 64) + 2], liftForce.z);
