@@ -61,7 +61,7 @@ func _process(_delta: float) -> void:
 	print(totalForce.length())
 	print(totalForce)
 	print()
-	plane.apply_central_force(totalForce)
+	plane.apply_central_impulse(totalForce)
 	
 
 func _exit_tree() -> void:
@@ -114,7 +114,7 @@ func _init_compute_code() -> void:
 	
 	# Creating 2D array for output
 	array_initialiser = []
-	for i in (texture_size.x / 8) * (texture_size.y / 8):
+	for i in (texture_size.x / 8) * (texture_size.y / 8) * 3:
 		array_initialiser.append(0)
 	var output_buffer_pba := PackedInt32Array(array_initialiser).to_byte_array()
 	output_buffer = rd.storage_buffer_create(output_buffer_pba.size(), output_buffer_pba)
@@ -182,6 +182,8 @@ func _render_process() -> void:
 	pba = rd.buffer_get_data(output_buffer)
 	var out_array = pba.to_float32_array()
 	
+	totalForce = Vector3()
+	
 	for i in len(out_array) :
 		if i % 3 == 0 :
 			totalForce.x += out_array[i]
@@ -193,10 +195,17 @@ func _render_process() -> void:
 	# This only prints to your terminal when you run godot from your terminal
 	# But it works! And when it runs you can see the outline of the plane_model forming in the numbers
 	#for i in out_array.size() :
-		#var printer = str(out_array[i]) + ","
-		#printraw(printer)
-		#if i % 64 == 63 :
+		#if out_array[i] != 0 :
+			#printraw(str(1) + ",")
+		#else :
+			#var printer = "." + ","
+			#printraw(printer)
+		#if i % (64 * 3) == ((64 * 3) - 1) :
 			#printraw("\n")
+	
+	for i in out_array.size() :
+		if i % 3 == 0 : printraw("\n")
+		printraw(str(out_array[i]) + ",")
 	
 	rd.buffer_clear(output_buffer,0,pba.size())
 	
