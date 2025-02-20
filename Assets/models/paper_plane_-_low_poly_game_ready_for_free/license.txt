@@ -1,0 +1,11 @@
+Model Information:
+* title:	Paper Plane - Low Poly Game Ready For Free
+* source:	https://sketchfab.com/3d-models/paper-plane-low-poly-game-ready-for-free-53c935434bbd4d398bed826b0dd07446
+* author:	LittleZCoordinate (https://sketchfab.com/LittleZCoordinate)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Paper Plane - Low Poly Game Ready For Free" (https://sketchfab.com/3d-models/paper-plane-low-poly-game-ready-for-free-53c935434bbd4d398bed826b0dd07446) by LittleZCoordinate (https://sketchfab.com/LittleZCoordinate) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

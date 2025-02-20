@@ -37,12 +37,13 @@ void fragLiftForce(in vec3 norm, in float angle, in float liftCoef, in float pre
 
     float density = pressure / (R * avgTempK);
 
-    //LiftForce = (density * 0.5 * liftCoef * pow(speed, 2) * pixelSize * norm);
-    LiftForce = (density * 0.5 * liftCoef * pow(speed, 2) * pixelSize * vec3(0.0f, 1.0f, 0.0f));
+    LiftForce = (density * 0.5 * liftCoef * pow(speed, 2) * pixelSize * norm);
+    //LiftForce = (density * 0.5 * liftCoef * pow(speed, 2) * pixelSize * vec3(0.0f, 1.0f, 0.0f));
 }
 
 void main() {
     vec4 texel_col = texture(normalImage, vec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y));
+
 
     if (texel_col.a == 0.f) {
         return;
@@ -92,16 +93,16 @@ void main() {
     float pressure = 101325.f * exp(-(altitude * constants));
 
     vec3 liftForce = vec3(0.0f, 0.0f, 0.0f);
-    fragLiftForce(texel_col.xyz, AoA, liftCoef, pressure, length(windVel), camSize/texWidth, liftForce);
+    fragLiftForce(normalize(texel_col.xyz), AoA, liftCoef, pressure, length(windVel), camSize/texWidth, liftForce);
 
     // Test code, delete when some other output can be gotten from the shader
-    //if(texel_col.w > 0.0) {
-    //    atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
-    //}
-
-    if(texel_col.w > 0.0 && dot(texel_col.xyz, vel) < 0.0f) {
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64) + 0], liftForce.x);
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64) + 1], liftForce.y);
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64) + 2], liftForce.z);
+    if(texel_col.w > 0.0 && dot(texel_col.xyz, vec3(0.0, 1.0, 0.0)) < 0.0f) {
+        atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
     }
+
+    //if(texel_col.w > 0.0 && dot(texel_col.xyz, vel) < 0.0f) {
+    //    atomicAdd(output_buffer.data[((gl_WorkGroupID.y * 3) + gl_WorkGroupID.x * 64) + 0], liftForce.x);
+    //    atomicAdd(output_buffer.data[((gl_WorkGroupID.y * 3) + gl_WorkGroupID.x * 64) + 1], liftForce.y);
+    //    atomicAdd(output_buffer.data[((gl_WorkGroupID.y * 3) + gl_WorkGroupID.x * 64) + 2], liftForce.z);
+    //}
 }

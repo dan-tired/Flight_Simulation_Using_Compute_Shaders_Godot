@@ -194,18 +194,20 @@ func _render_process() -> void:
 	
 	# This only prints to your terminal when you run godot from your terminal
 	# But it works! And when it runs you can see the outline of the plane_model forming in the numbers
-	#for i in out_array.size() :
-		#if out_array[i] != 0 :
-			#printraw(str(1) + ",")
-		#else :
-			#var printer = "." + ","
-			#printraw(printer)
-		#if i % (64 * 3) == ((64 * 3) - 1) :
-			#printraw("\n")
-	
 	for i in out_array.size() :
-		if i % 3 == 0 : printraw("\n")
-		printraw(str(out_array[i]) + ",")
+		#if i % 3 == 0 :
+			#printraw("T,")
+		if out_array[i] != 0 :
+			printraw(str(1) + ",")
+		else :
+			var printer = "." + ","
+			printraw(printer)
+		if i % (64 ) == ((64 ) - 1) :
+			printraw("\n")
+	
+	#for i in out_array.size() :
+		#if i % 3 == 0 : printraw("\n")
+		#printraw(str(out_array[i]) + ",")
 	
 	rd.buffer_clear(output_buffer,0,pba.size())
 	
