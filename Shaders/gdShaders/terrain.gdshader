@@ -10,7 +10,7 @@ vec3 getNormal(vec2 uv, float texelSize) {
 	float r = texture(heightmap, uv + vec2(texelSize * vec2(1.0, 0.0))).r * terrian_height;
 	float l = texture(heightmap, uv + vec2(texelSize * vec2(-1.0, 0.0))).r * terrian_height;
 	float b = texture(heightmap, uv + vec2(texelSize * vec2(0.0, 1.0))).r * terrian_height;
-	
+
 	return -normalize(vec3(2.0 * (r - l), 2.0 * (b - t), -4.0));
 }
 
@@ -19,17 +19,17 @@ void vertex() {
 	vec2 uvs = vec2((UV.x + uvx), (UV.y + uvy));
 
 	vec3 heightmap_out = texture(heightmap, uvs).rgb;
-	
+
 	vec3 halver = vec3(0.5, 0.5, 0.5);
-	
+
 	heightmap_out = heightmap_out - halver;
-	
+
 	vec3 vec_displacement = heightmap_out * vec3(0.0, terrian_height, 0.0);
-	
+
 	VERTEX.xyz += vec_displacement;
-	
+
 	NORMAL = getNormal(UV + vec2(uvx, uvy), 1.0 / float(textureSize(heightmap, 0).x));
-	
+
 	COLOR = COLOR;
 
 }

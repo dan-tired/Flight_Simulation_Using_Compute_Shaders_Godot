@@ -1,17 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://djqe6qcvbm1qw"]
+[gd_scene load_steps=5 format=3 uid="uid://djqe6qcvbm1qw"]
 
 [ext_resource type="Script" path="res://Scripts/planeScene.gd" id="1_4oic6"]
-[ext_resource type="Shader" path="res://Shaders/gdShaders/depth.gdshader" id="2_0t7rk"]
 [ext_resource type="Script" path="res://Scripts/ps_userControl.gd" id="3_7pyr4"]
 [ext_resource type="PackedScene" uid="uid://cguxk24c556i4" path="res://Assets/models/paper_plane_-_low_poly_game_ready_for_free/scene.gltf" id="4_5klkb"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xcdt7"]
-render_priority = 0
-shader = ExtResource("2_0t7rk")
-
-[sub_resource type="QuadMesh" id="QuadMesh_nwcd6"]
-material = SubResource("ShaderMaterial_xcdt7")
-flip_faces = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vkqst"]
 size = Vector3(0.461, 0.102, 0.469116)
@@ -19,19 +10,6 @@ size = Vector3(0.461, 0.102, 0.469116)
 [node name="PlaneScene" type="RigidBody3D"]
 mass = 0.005
 script = ExtResource("1_4oic6")
-
-[node name="DepthCam" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.573634, 0)
-projection = 1
-current = true
-fov = 30.0
-near = 0.001
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="DepthCam"]
-transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, -7.82773e-09, -0.179078)
-cast_shadow = 0
-mesh = SubResource("QuadMesh_nwcd6")
-skeleton = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.978595, 0.205794, 0, -0.205794, 0.978595, 0, 0, 0, 1, -0.003, -0.004, 0.00115967)

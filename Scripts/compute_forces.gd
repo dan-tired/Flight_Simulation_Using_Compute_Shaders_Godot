@@ -34,7 +34,7 @@ func _ready() -> void:
 	plane_model = get_node("PlaneModel")
 	plane = get_parent().get_node("PlaneScene")
 	
-	var cam : Camera3D = plane_model.get_child(0)
+	var cam : Camera3D = get_node("PlaneModel/OrthoCam")
 	
 	camSize = cam.size
 	
@@ -150,7 +150,7 @@ func _render_process() -> void:
 	
 	var input_array = pba.to_float32_array()
 	
-	# Passing in the velocity of the plane_model
+	# Passing in the velocity of the plane
 	input_array[0] = plane.linear_velocity.x
 	input_array[1] = plane.linear_velocity.y
 	input_array[2] = plane.linear_velocity.z
@@ -197,7 +197,7 @@ func _render_process() -> void:
 			totalForce.z += out_array[i]
 	
 	## This only prints to your terminal when you run godot from your terminal
-	## But it works! And when it runs you can see the outline of the plane_model forming in the numbers
+	## But it works! And when it runs you can see the outline of the plane forming in the numbers
 	#for i in out_array.size() :
 		#if i % 3 == 0 :
 			#printraw("T,")
