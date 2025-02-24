@@ -61,7 +61,9 @@ func _process(_delta: float) -> void:
 	print(totalForce.length())
 	print(totalForce)
 	print()
-	plane.apply_central_impulse(totalForce)
+
+func _physics_process(delta: float) -> void:
+	plane.apply_central_force(totalForce)
 	
 
 func _exit_tree() -> void:
@@ -82,6 +84,8 @@ func _init_compute_code() -> void:
 	
 	var img := get_texture().get_image()
 	img_pba = img.get_data()
+	
+	#img.save_png("test.png")
 	
 	fmt = RDTextureFormat.new()
 	fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_SRGB
@@ -192,18 +196,18 @@ func _render_process() -> void:
 		else :
 			totalForce.z += out_array[i]
 	
-	# This only prints to your terminal when you run godot from your terminal
-	# But it works! And when it runs you can see the outline of the plane_model forming in the numbers
-	for i in out_array.size() :
+	## This only prints to your terminal when you run godot from your terminal
+	## But it works! And when it runs you can see the outline of the plane_model forming in the numbers
+	#for i in out_array.size() :
 		#if i % 3 == 0 :
 			#printraw("T,")
-		if out_array[i] != 0 :
-			printraw(str(1) + ",")
-		else :
-			var printer = "." + ","
-			printraw(printer)
-		if i % (64 ) == ((64 ) - 1) :
-			printraw("\n")
+		#if out_array[i] != 0 :
+			#printraw(str(1) + ",")
+		#else :
+			#var printer = "." + ","
+			#printraw(printer)
+		#if i % (64 * 3) == ((64 * 3) - 1) :
+			#printraw("\n")
 	
 	#for i in out_array.size() :
 		#if i % 3 == 0 : printraw("\n")

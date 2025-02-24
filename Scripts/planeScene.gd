@@ -19,7 +19,7 @@ func _physics_process(delta: float) -> void:
 		else :
 			thrust = 0.0
 	
-	direction = $PlaneBody/Front.global_position - $PlaneBody.global_position
+	direction = $CollisionShape3D/PlaneBody/Front.global_position - $CollisionShape3D/PlaneBody.global_position
 	
 	direction = direction.normalized()
 	

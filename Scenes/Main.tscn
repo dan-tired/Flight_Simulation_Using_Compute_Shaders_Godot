@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dw41nmvofjv0c"]
+[gd_scene load_steps=8 format=3 uid="uid://dw41nmvofjv0c"]
 
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_skjnb"]
 [ext_resource type="Script" path="res://Scripts/compute_forces.gd" id="2_5yn84"]
@@ -14,6 +14,9 @@ ambient_light_color = Color(0.901428, 0.901428, 0.901428, 1)
 ambient_light_energy = 0.0
 tonemap_exposure = 0.4
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_d0sah"]
+viewport_path = NodePath("DepthSubViewport")
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_skjnb")
 
@@ -27,7 +30,6 @@ coefficientOfLift = 0.17
 [node name="PlaneModel" parent="DepthSubViewport" instance=ExtResource("3_swi1m")]
 
 [node name="PlaneScene" parent="." instance=ExtResource("3_swi1m")]
-mass = 0.05
 
 [node name="FollowerCam" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, -0.5, 0.866025, 0, 0.866025, 0.5, -1, 2.18557e-08, -3.78552e-08, 1, 0.6, 0)
@@ -47,4 +49,16 @@ shadow_enabled = true
 directional_shadow_mode = 0
 
 [node name="Terrain" parent="." instance=ExtResource("4_5p7s3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.110621, -0.233705, -0.0750297)
 script = ExtResource("3_wt4pn")
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
+offset_left = 1.0
+offset_top = 436.0
+offset_right = 227.0
+offset_bottom = 647.0
+
+[node name="Sprite2D" type="Sprite2D" parent="AspectRatioContainer"]
+position = Vector2(131, 91.75)
+scale = Vector2(0.523438, 0.456055)
+texture = SubResource("ViewportTexture_d0sah")
