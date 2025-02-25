@@ -6,12 +6,12 @@ uniform float uvx : hint_range(-100.0, 100.0, 0.001);
 uniform float uvy : hint_range(-100.0, 100.0, 0.001);
 
 vec3 getNormal(vec2 uv, float texelSize) {
-	float t = texture(heightmap, uv + vec2(texelSize * vec2(0.0, -1.0))).r * terrian_height;
-	float r = texture(heightmap, uv + vec2(texelSize * vec2(1.0, 0.0))).r * terrian_height;
-	float l = texture(heightmap, uv + vec2(texelSize * vec2(-1.0, 0.0))).r * terrian_height;
-	float b = texture(heightmap, uv + vec2(texelSize * vec2(0.0, 1.0))).r * terrian_height;
+	float t = texture(heightmap, uv + vec2(texelSize * vec2(1.0, 0.0))).x * terrian_height;
+	float r = texture(heightmap, uv + vec2(texelSize * vec2(0.0, -1.0))).x * terrian_height;
+	float l = texture(heightmap, uv + vec2(texelSize * vec2(0.0, 1.0))).x * terrian_height;
+	float b = texture(heightmap, uv + vec2(texelSize * vec2(-1.0, 0.0))).x * terrian_height;
 
-	return -normalize(vec3(2.0 * (r - l), 2.0 * (b - t), -4.0));
+	return -normalize(vec3(2.0 * (b - t), -4.0, 2.0 * (r - l)));
 }
 
 void vertex() {

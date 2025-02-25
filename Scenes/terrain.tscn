@@ -9,7 +9,7 @@ render_priority = 0
 shader = ExtResource("2_ja2gm")
 shader_parameter/terrian_height = 50.0
 shader_parameter/uvx = 4.75e-06
-shader_parameter/uvy = 2.375e-05
+shader_parameter/uvy = 4.75e-06
 shader_parameter/heightmap = ExtResource("3_gwwy6")
 
 [node name="Terrain" type="Node3D"]

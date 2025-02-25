@@ -1,6 +1,6 @@
 extends RigidBody3D
 
-const THRUST_ACCEL : float = 0.05
+const THRUST_ACCEL : float = 0.5
 
 var thrust : float = 0.0
 

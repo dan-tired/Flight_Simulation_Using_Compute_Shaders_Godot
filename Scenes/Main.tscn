@@ -61,26 +61,31 @@ current = true
 environment = SubResource("Environment_dlho0")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(-1, 8.74228e-08, -3.32297e-14, -6.29206e-08, -0.719727, 0.694257, 6.06938e-08, 0.694257, 0.719727, 34.9321, 96.3029, -4.00781)
+transform = Transform3D(0.962517, -1.18555e-08, 0.271222, -0.209209, -0.636401, 0.742445, 0.172606, -0.771358, -0.612547, 30.6528, 92.5075, -0.961093)
 light_color = Color(0.996481, 0.975169, 0.969646, 1)
-light_energy = 1.492
-light_indirect_energy = 0.0
+light_energy = 1.875
+light_indirect_energy = 8.167
 light_volumetric_fog_energy = 0.0
-light_angular_distance = 22.98
+light_angular_distance = 36.95
+light_bake_mode = 1
 shadow_enabled = true
 directional_shadow_mode = 0
+directional_shadow_blend_splits = true
+directional_shadow_fade_start = 0.0
+directional_shadow_max_distance = 8192.0
+directional_shadow_pancake_size = 0.0
 
 [node name="Terrain" parent="." instance=ExtResource("4_5p7s3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, 0)
 script = ExtResource("3_wt4pn")
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
-offset_left = 1.0
-offset_top = 436.0
-offset_right = 227.0
-offset_bottom = 647.0
-
-[node name="Sprite2D" type="Sprite2D" parent="AspectRatioContainer"]
-position = Vector2(131, 91.75)
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(132, 527.75)
 scale = Vector2(0.523438, 0.456055)
 texture = SubResource("ViewportTexture_d0sah")
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Sprite2D"]
+offset_left = -250.0
+offset_top = -201.0
+offset_right = 272.0
+offset_bottom = 264.0
