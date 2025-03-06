@@ -54,4 +54,5 @@ config/icon="res://Assets/icon.svg"
 
 [rendering]
 
+environment/defaults/default_clear_color=Color(1, 1, 1, 1)
 mesh_lod/lod_change/threshold_pixels=1024.0

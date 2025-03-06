@@ -2,21 +2,20 @@
 
 [ext_resource type="Script" path="res://Scripts/planeScene.gd" id="1_4oic6"]
 [ext_resource type="Script" path="res://Scripts/ps_userControl.gd" id="3_7pyr4"]
-[ext_resource type="PackedScene" uid="uid://cguxk24c556i4" path="res://Assets/models/paper_plane_-_low_poly_game_ready_for_free/scene.gltf" id="4_5klkb"]
+[ext_resource type="PackedScene" uid="uid://cnlw3b3rbqbll" path="res://Assets/models/paper_plane_-_low_poly_game_ready_for_free/sketchfab_paper_plane_simple.tscn" id="3_t8grd"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vkqst"]
-size = Vector3(0.461, 0.102, 0.469116)
+size = Vector3(3.9046, 0.853522, 4.00851)
 
 [node name="PlaneScene" type="RigidBody3D"]
 mass = 0.005
 script = ExtResource("1_4oic6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(0.978595, 0.205794, 0, -0.205794, 0.978595, 0, 0, 0, 1, -0.003, -0.004, 0.00115967)
+transform = Transform3D(0.977651, 0.210233, 0, -0.210233, 0.977651, 0, 0, 0, 1, -0.00891071, -0.0398557, 0.0091399)
 shape = SubResource("BoxShape3D_vkqst")
 
 [node name="PlaneBody" type="Node3D" parent="CollisionShape3D"]
-transform = Transform3D(0.978595, -0.205794, 0, 0.205794, 0.978595, 0, 0, 0, 1, 0.00211261, 0.00453176, -0.00115967)
 script = ExtResource("3_7pyr4")
 
 [node name="Front" type="Node3D" parent="CollisionShape3D/PlaneBody"]
@@ -28,5 +27,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 [node name="Up" type="Node3D" parent="CollisionShape3D/PlaneBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
-[node name="Sketchfab_Scene" parent="CollisionShape3D/PlaneBody" instance=ExtResource("4_5klkb")]
-transform = Transform3D(4.37114e-08, -3.82137e-15, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, -4.37114e-08, -1.74623e-10, 1.30104e-18, 0)
+[node name="Sketchfab_Scene" parent="CollisionShape3D/PlaneBody" instance=ExtResource("3_t8grd")]
+transform = Transform3D(-8.64872e-08, 0.978596, 0.205794, -8.99554e-09, 0.205794, -0.978596, -1, -8.64873e-08, -8.99554e-09, 0.000332598, 0.0408383, -0.0091399)

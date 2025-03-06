@@ -1,82 +1,90 @@
-[gd_scene load_steps=11 format=3 uid="uid://dw41nmvofjv0c"]
+[gd_scene load_steps=13 format=3 uid="uid://dw41nmvofjv0c"]
 
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_skjnb"]
 [ext_resource type="Script" path="res://Scripts/compute_forces.gd" id="2_5yn84"]
 [ext_resource type="PackedScene" uid="uid://djqe6qcvbm1qw" path="res://Scenes/plane_scene.tscn" id="3_swi1m"]
 [ext_resource type="Script" path="res://Scripts/main_terrain.gd" id="3_wt4pn"]
 [ext_resource type="PackedScene" uid="uid://dntw0xdlqi03d" path="res://Scenes/terrain.tscn" id="4_5p7s3"]
-[ext_resource type="Shader" path="res://Shaders/gdShaders/depth.gdshader" id="4_pe1u4"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tah4x"]
-render_priority = 0
-shader = ExtResource("4_pe1u4")
+[sub_resource type="Environment" id="Environment_tewqb"]
 
-[sub_resource type="QuadMesh" id="QuadMesh_evokp"]
-material = SubResource("ShaderMaterial_tah4x")
-flip_faces = true
-orientation = 1
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_ou82e"]
+turbidity = 108.31
+sun_disk_scale = 0.0
+ground_color = Color(0.360784, 0.85098, 0.54902, 1)
+energy_multiplier = 11.78
 
-[sub_resource type="Environment" id="Environment_dlho0"]
-background_mode = 1
-background_color = Color(0.432143, 0.724847, 0.844916, 1)
-background_energy_multiplier = 1.56
-ambient_light_color = Color(0.901428, 0.901428, 0.901428, 1)
-ambient_light_energy = 0.0
-tonemap_exposure = 0.4
+[sub_resource type="Sky" id="Sky_e0lfj"]
+sky_material = SubResource("PhysicalSkyMaterial_ou82e")
+
+[sub_resource type="Environment" id="Environment_0c3bt"]
+background_mode = 2
+sky = SubResource("Sky_e0lfj")
+ssao_enabled = true
+ssao_radius = 4.35
+ssao_intensity = 3.37
+ssao_power = 1.26134
+ssao_horizon = 0.38
+ssao_sharpness = 1.0
+ssao_light_affect = 0.08
+ssil_radius = 5.95
+ssil_intensity = 0.53
+sdfgi_bounce_feedback = 0.26
+fog_enabled = true
+fog_light_energy = 1.95
+fog_density = 0.0019
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_ak8u3"]
+
+[sub_resource type="Compositor" id="Compositor_piwhr"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_d0sah"]
-viewport_path = NodePath("DepthSubViewport")
+viewport_path = NodePath("DepthNormalSubViewport")
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_skjnb")
+cam_dist = 10.0
 
-[node name="DepthSubViewport" type="SubViewport" parent="."]
-own_world_3d = true
+[node name="DepthNormalSubViewport" type="SubViewport" parent="."]
 transparent_bg = true
+canvas_cull_mask = 4293918736
 render_target_update_mode = 4
 script = ExtResource("2_5yn84")
 coefficientOfLift = 0.17
 
-[node name="PlaneModel" parent="DepthSubViewport" instance=ExtResource("3_swi1m")]
-gravity_scale = 0.0
-script = null
+[node name="PlaneModel" parent="DepthNormalSubViewport" instance=ExtResource("3_swi1m")]
+mass = 40.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="DepthSubViewport/PlaneModel"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.251577, 0)
-mesh = SubResource("QuadMesh_evokp")
-
-[node name="OrthoCam" type="Camera3D" parent="DepthSubViewport/PlaneModel"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.522444, 0)
+[node name="OrthoCam" type="Camera3D" parent="DepthNormalSubViewport/PlaneModel"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.19564, 0)
+cull_mask = 16
+environment = SubResource("Environment_tewqb")
 projection = 1
+current = true
+size = 6.0
 near = 0.001
+far = 20.0
 
-[node name="PlaneScene" parent="." instance=ExtResource("3_swi1m")]
-mass = 10.0
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0c3bt")
+camera_attributes = SubResource("CameraAttributesPractical_ak8u3")
+compositor = SubResource("Compositor_piwhr")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(0.589586, -0.763042, 0.264869, 0.149966, 0.42564, 0.892379, -0.793661, -0.486413, 0.365382, 0, 6.93079, 5.14143)
+light_energy = 0.452
+light_cull_mask = 4293918723
+directional_shadow_mode = 0
+directional_shadow_fade_start = 1.0
+directional_shadow_max_distance = 8192.0
 
 [node name="FollowerCam" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, -0.5, 0.866025, 0, 0.866025, 0.5, -1, 2.18557e-08, -3.78552e-08, 1, 0.6, 0)
+cull_mask = 3
 current = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_dlho0")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(0.962517, -1.18555e-08, 0.271222, -0.209209, -0.636401, 0.742445, 0.172606, -0.771358, -0.612547, 30.6528, 92.5075, -0.961093)
-light_color = Color(0.996481, 0.975169, 0.969646, 1)
-light_energy = 1.875
-light_indirect_energy = 8.167
-light_volumetric_fog_energy = 0.0
-light_angular_distance = 36.95
-light_bake_mode = 1
-shadow_enabled = true
-directional_shadow_mode = 0
-directional_shadow_blend_splits = true
-directional_shadow_fade_start = 0.0
-directional_shadow_max_distance = 8192.0
-directional_shadow_pancake_size = 0.0
-
 [node name="Terrain" parent="." instance=ExtResource("4_5p7s3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -88, 0)
 script = ExtResource("3_wt4pn")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

@@ -1,0 +1,54 @@
+[gd_scene load_steps=5 format=4 uid="uid://cnlw3b3rbqbll"]
+
+[ext_resource type="Shader" path="res://Shaders/gdShaders/depth.gdshader" id="1_yw00i"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dw2d3"]
+render_priority = 0
+shader = ExtResource("1_yw00i")
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_3exfe"]
+_surfaces = [{
+"aabb": AABB(-1.9884, -2, 0, 3.97681, 4.00199, 0.852933),
+"format": 34359742465,
+"index_count": 84,
+"index_data": PackedByteArray("AAACAAEAAgADAAEABAAGAAUABQAGAAcAAQAJAAgAAQADAAkACgABAAsACgAAAAEABgAMAAcABgANAAwADgAGAAQADgAPAAYACwAOAAoACwAPAA4AAQAPAAsAAQAGAA8ACAAGAAEACAANAAYACQANAAgACQAMAA0AAgAHAAMAAgAFAAcAAAAFAAIAAAAEAAUACgAEAAAACgAOAAQAAwAMAAkAAwAHAAwA"),
+"name": "Scene_-_Root",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 16,
+"vertex_data": PackedByteArray("zczMvgAAAED8z1g9AAAAAAAAAMD8z1g9AAAAAGZm5j/MWVo/zczMPgAAAED8z1g9PprCvqIgAED6wa48AAAAAORO6D8cOUg/AAAAALx0/78AAAAAPprCPqIgAED6wa48AYT+P1YxqD/8z1g9zszMPwAAAED8z1g9zszMvwAAAED8z1g9AYT+v1YxqD/8z1g9zszMPwAAAED6wa48AYT+P1YxqD/6wa48zszMvwAAAED6wa48AYT+v1YxqD/6wa48")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_sowil"]
+resource_name = "Sketchfab_Scene_PaperPlane__0"
+_surfaces = [{
+"aabb": AABB(-1.9884, -2, 0, 3.97681, 4.00199, 0.852933),
+"attribute_data": PackedByteArray("cRzHPgAAgD8AAIA/AAAAAAAAAD8AAIA/AAAAPwAAgD8AAIA/AAAAAMdxHD8AAIA/cRzHPgAAgD8AAAA/AACAPwAAgD8AAAAAAAAAPwAAgD/HcRw/AACAPwAAgD8AAAAAAACAPwAAAAAAAIA/qxhUP1ZVVT8AAIA/x3EcPwAAgD+qqio+AACAP1SdLz6rGFQ/cRzHPgAAgD8AAIA/AAAAAMdxHD8AAIA/VlVVPwAAgD8AAIA/qxhUP6qqKj4AAIA/cRzHPgAAgD8AAIA/AAAAAFSdLz6rGFQ/VJ0vPqsYVD+qqio+AACAP6qqKj4AAIA/VJ0vPqsYVD8AAIA/AAAAAFSdLz6rGFQ/VJ0vPqsYVD8AAIA/AAAAAAAAgD+rGFQ/AACAPwAAAAAAAIA/AAAAAAAAgD+rGFQ/VlVVPwAAgD8AAIA/qxhUPwAAgD+rGFQ/VlVVPwAAgD8AAAA/AACAP8dxHD8AAIA/x3EcPwAAgD8AAAA/AACAP3Ecxz4AAIA/AAAAPwAAgD8AAAA/AACAP3Ecxz4AAIA/qqoqPgAAgD9xHMc+AACAP3Ecxz4AAIA/qqoqPgAAgD/HcRw/AACAP1ZVVT8AAIA/VlVVPwAAgD/HcRw/AACAPw=="),
+"format": 34359742487,
+"index_count": 84,
+"index_data": PackedByteArray("AAACAAEAAwAFAAQABgAIAAcACQALAAoADAAOAA0ADAAPAA4AEAAMABEAEAASAAwAEwAVABQAEwAWABUAFwAZABgAFwAaABkAGwAdABwAGwAeAB0AHwAhACAAHwAiACEAIwAlACQAIwAmACUAJwApACgAJwAqACkAKwAtACwAKwAuAC0ALwAxADAALwAyADEAMwA1ADQAMwA2ADUANwA5ADgANwA6ADkA"),
+"material": SubResource("ShaderMaterial_dw2d3"),
+"name": "Scene_-_Root",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 59,
+"vertex_data": PackedByteArray("zczMvgAAAED8z1g9AAAAAAAAAMD8z1g9AAAAAGZm5j/MWVo/AAAAAGZm5j/MWVo/AAAAAAAAAMD8z1g9zczMPgAAAED8z1g9PprCvqIgAED6wa48AAAAAORO6D8cOUg/AAAAALx0/78AAAAAAAAAAORO6D8cOUg/PprCPqIgAED6wa48AAAAALx0/78AAAAAAAAAAAAAAMD8z1g9AYT+P1YxqD/8z1g9zszMPwAAAED8z1g9zczMPgAAAED8z1g9zszMvwAAAED8z1g9AYT+v1YxqD/8z1g9zczMvgAAAED8z1g9AAAAALx0/78AAAAAPprCPqIgAED6wa48zszMPwAAAED6wa48AYT+P1YxqD/6wa48zszMvwAAAED6wa48PprCvqIgAED6wa48AAAAALx0/78AAAAAAYT+v1YxqD/6wa48AYT+v1YxqD/8z1g9zszMvwAAAED8z1g9zszMvwAAAED6wa48AYT+v1YxqD/6wa48AAAAAAAAAMD8z1g9AYT+v1YxqD/8z1g9AYT+v1YxqD/6wa48AAAAALx0/78AAAAAAYT+P1YxqD/8z1g9AAAAAAAAAMD8z1g9AAAAALx0/78AAAAAAYT+P1YxqD/6wa48zszMPwAAAED8z1g9AYT+P1YxqD/8z1g9AYT+P1YxqD/6wa48zszMPwAAAED6wa48AAAAAGZm5j/MWVo/zczMPgAAAED8z1g9PprCPqIgAED6wa48AAAAAORO6D8cOUg/zczMvgAAAED8z1g9AAAAAGZm5j/MWVo/AAAAAORO6D8cOUg/PprCvqIgAED6wa48zszMvwAAAED8z1g9zczMvgAAAED8z1g9PprCvqIgAED6wa48zszMvwAAAED6wa48zczMPgAAAED8z1g9zszMPwAAAED8z1g9zszMPwAAAED6wa48PprCPqIgAED6wa48ui7fd5GkJEm6Lt93kaQkSbou33eRpCRJRNHfd7XtSRJE0d93te1JEkTR33e17UkSDfiirqKk+7YN+KKuoqT7tg34oq6ipPu28Qeirvbtre3xB6Ku9u2t7fEHoq727a3t/3//f////z//f/9/////P/9//3////8//3//f////z//f/9/////P/9//3////8//3//f////z9q/7//kP/nv2r/v/+J/+S/av+//5H/6L9q/7//nP/tv5QAv//R/zXAlAC//8n/OcCUAL//z/82wJQAv//b/zDARS5Frv///79FLkWu////v0UuRa7///+/RS5Frv///78fL4BO////vx8vgE7///+/Hy+ATv///78fL4BO////v9/QgE7///+/39CATv///7/f0IBO////v9/QgE7///+/udFFrv///7+50UWu////v7nRRa7///+/udFFrv///79MdN7h////P0x03uH///8/THTe4f///z9MdN7h////P7KL3uH///8/sove4f///z+yi97h////P7KL3uH///8/5X8E/P///z/lfwT8////P+V/BPz///8/5X8E/P///z8ZgAT8////PxmABPz///8/GYAE/P///z8ZgAT8////Pw==")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_3exfe")
+
+[node name="Sketchfab_Scene" type="Node3D"]
+
+[node name="Sketchfab_model" type="Node3D" parent="."]
+
+[node name="PaperPlane_fbx" type="Node3D" parent="Sketchfab_model"]
+
+[node name="RootNode" type="Node3D" parent="Sketchfab_model/PaperPlane_fbx"]
+
+[node name="PaperPlane" type="Node3D" parent="Sketchfab_model/PaperPlane_fbx/RootNode"]
+
+[node name="PaperPlane__0" type="MeshInstance3D" parent="Sketchfab_model/PaperPlane_fbx/RootNode/PaperPlane"]
+layers = 17
+mesh = SubResource("ArrayMesh_sowil")
+skeleton = NodePath("")

@@ -15,5 +15,6 @@ shader_parameter/heightmap = ExtResource("3_gwwy6")
 [node name="Terrain" type="Node3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+layers = 2
 mesh = ExtResource("1_f3q0x")
 surface_material_override/0 = SubResource("ShaderMaterial_bbcyh")

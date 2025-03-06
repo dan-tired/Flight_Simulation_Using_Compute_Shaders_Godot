@@ -30,11 +30,12 @@ void vertex() {
 
 	NORMAL = getNormal(UV + vec2(uvx, uvy), 1.0 / float(textureSize(heightmap, 0).x));
 
-	COLOR = COLOR;
+	COLOR.rgb = vec3(0.1, 0.6, 0.2);
 
 }
 
 void fragment() {
+	ALBEDO = COLOR.rgb;
 	NORMAL = NORMAL;
 }
 

@@ -101,6 +101,7 @@ void main() {
     //    atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
     //}
 
+    // 
     if(texel_col.w > 0.0f && dot(norm, windVel) < -0.1f) {
         atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 0], liftForce.x);
         atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 1], liftForce.y);

@@ -21,7 +21,6 @@ var img_pba : PackedByteArray
 
 var ready_complete : bool
 
-var plane_model : RigidBody3D
 var plane : RigidBody3D
 var camSize : float
 
@@ -31,10 +30,9 @@ signal compute_code_ready
 func _ready() -> void:
 	render_target_update_mode = UpdateMode.UPDATE_ALWAYS
 	
-	plane_model = get_node("PlaneModel")
-	plane = get_parent().get_node("PlaneScene")
+	plane = get_parent().get_node("DepthNormalSubViewport/PlaneModel")
 	
-	var cam : Camera3D = get_node("PlaneModel/OrthoCam")
+	var cam : Camera3D = get_parent().get_node("DepthNormalSubViewport/PlaneModel/OrthoCam")
 	
 	camSize = cam.size
 	
@@ -62,8 +60,9 @@ func _process(_delta: float) -> void:
 	print(totalForce)
 	print()
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	plane.apply_central_force(totalForce)
+	pass
 	
 
 func _exit_tree() -> void:
