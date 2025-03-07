@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://djqe6qcvbm1qw"]
 
-[ext_resource type="Script" path="res://Scripts/planeScene.gd" id="1_4oic6"]
-[ext_resource type="Script" path="res://Scripts/ps_userControl.gd" id="3_7pyr4"]
+[ext_resource type="Script" uid="uid://b8kgcy6tqclcc" path="res://Scripts/planeScene.gd" id="1_4oic6"]
+[ext_resource type="Script" uid="uid://pf7pbkfk0qpf" path="res://Scripts/ps_userControl.gd" id="3_7pyr4"]
 [ext_resource type="PackedScene" uid="uid://cnlw3b3rbqbll" path="res://Assets/models/paper_plane_-_low_poly_game_ready_for_free/sketchfab_paper_plane_simple.tscn" id="3_t8grd"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vkqst"]
