@@ -54,6 +54,7 @@ coefficientOfLift = 0.17
 
 [node name="PlaneModel" parent="DepthNormalSubViewport" instance=ExtResource("3_swi1m")]
 mass = 40.0
+THRUST_ACCEL = 20.0
 
 [node name="OrthoCam" type="Camera3D" parent="DepthNormalSubViewport/PlaneModel"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.19564, 0)

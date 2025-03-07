@@ -2,14 +2,14 @@
 
 [ext_resource type="ArrayMesh" uid="uid://cptq5nmkbacyd" path="res://Assets/clipmap_mesh.obj" id="1_g24sy"]
 [ext_resource type="Shader" uid="uid://mu0ot0gttu8s" path="res://Shaders/gdShaders/terrain.gdshader" id="2_ja2gm"]
-[ext_resource type="Texture2D" uid="uid://cew3bxmdp7acm" path="res://Assets/heightmap_hard_light.jpg" id="3_pmkc2"]
+[ext_resource type="Texture2D" uid="uid://da33kjnt385cg" path="res://Assets/real_heightmap.jpg" id="3_gwwy6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hvvm8"]
 render_priority = 0
 shader = ExtResource("2_ja2gm")
-shader_parameter/heightmap = ExtResource("3_pmkc2")
+shader_parameter/heightmap = ExtResource("3_gwwy6")
 shader_parameter/terrian_height = 50.0
-shader_parameter/uvx = 0.0
+shader_parameter/uvx = 4.75e-06
 shader_parameter/uvy = 0.0
 
 [node name="Terrain" type="Node3D"]
