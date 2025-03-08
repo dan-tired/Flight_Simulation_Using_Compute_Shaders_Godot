@@ -74,8 +74,8 @@ texture_repeat = 1
 code = "shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
 
-uniform float uvx : hint_range(-500, 500, 0.0010000000475);
-uniform float uvy : hint_range(-500, 500, 0.0010000000475);
+uniform float uvx : hint_range(-500.0, 500.0, 0.0010000000475);
+uniform float uvy : hint_range(-500.0, 500.0, 0.0010000000475);
 uniform sampler2D heightmap : repeat_enable;
 uniform int terrain_height : hint_range(0, 300, 0);
 

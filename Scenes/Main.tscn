@@ -1,9 +1,9 @@
 [gd_scene load_steps=13 format=3 uid="uid://dw41nmvofjv0c"]
 
-[ext_resource type="Script" path="res://Scripts/main.gd" id="1_skjnb"]
-[ext_resource type="Script" path="res://Scripts/compute_forces.gd" id="2_5yn84"]
+[ext_resource type="Script" uid="uid://bxnt8n23173nr" path="res://Scripts/main.gd" id="1_skjnb"]
+[ext_resource type="Script" uid="uid://c7p8uv368daly" path="res://Scripts/compute_forces.gd" id="2_5yn84"]
 [ext_resource type="PackedScene" uid="uid://djqe6qcvbm1qw" path="res://Scenes/plane_scene.tscn" id="3_swi1m"]
-[ext_resource type="Script" path="res://Scripts/main_terrain.gd" id="3_wt4pn"]
+[ext_resource type="Script" uid="uid://bpre0eiriyjyy" path="res://Scripts/main_terrain.gd" id="3_wt4pn"]
 [ext_resource type="PackedScene" uid="uid://dntw0xdlqi03d" path="res://Scenes/terrain.tscn" id="4_5p7s3"]
 
 [sub_resource type="Environment" id="Environment_tewqb"]
@@ -54,6 +54,7 @@ coefficientOfLift = 0.17
 
 [node name="PlaneModel" parent="DepthNormalSubViewport" instance=ExtResource("3_swi1m")]
 mass = 40.0
+THRUST_ACCEL = 20.0
 
 [node name="OrthoCam" type="Camera3D" parent="DepthNormalSubViewport/PlaneModel"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.19564, 0)

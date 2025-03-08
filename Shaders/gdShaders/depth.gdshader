@@ -14,13 +14,12 @@ void vertex() {
 }
 
 void fragment() {
-	
+
 	if((int(CAMERA_VISIBLE_LAYERS)&1)==0) {
-		
 		vec3 worldNorms = (INV_VIEW_MATRIX * vec4(NORMAL.xyz, 0.0)).xyz;
-		
+
 		worldNorms = normalize(worldNorms);
-		
+
 		//ALBEDO.rgb = worldNorms;
 		//ALBEDO.rgb = worldNorms * 2.0 + 1.0;
 		ALBEDO.rgb = vec3(0.0);
@@ -29,7 +28,7 @@ void fragment() {
 	} else {
 		ALBEDO = COLOR.xyz;
 	}
-	
+
 	camera_visible_layers = CAMERA_VISIBLE_LAYERS;
 
 }

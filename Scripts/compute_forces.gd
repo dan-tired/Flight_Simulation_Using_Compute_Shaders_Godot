@@ -70,7 +70,7 @@ func _exit_tree() -> void:
 
 func _init_compute_code() -> void:
 	# Retrieving the rendering device
-	rd = RenderingServer.get_rendering_device()
+	rd = RenderingServer.create_local_rendering_device()
 	# Creating the shader
 	var shader_file : Resource = load("res://Shaders/ComputeShaderFiles/compute_example.glsl")
 	var shader_spirv : RDShaderSPIRV = shader_file.get_spirv()

@@ -5,7 +5,7 @@ var timer : Timer = Timer.new()
 var snap_step : int = 20
 var player_pos : Vector3 # This is the player
 
-var div : float = -1000
+var div : float = 20 * 50
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
