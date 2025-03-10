@@ -10,7 +10,7 @@ varying uint camera_visible_layers;
 
 void vertex() {
 	//POSITION = vec4(VERTEX.xy, 1.0, 1.0);
-	COLOR.rgb = vec3(0.4, 0.4, 0.6);
+	//COLOR.rgb = vec3(0.4, 0.4, 0.6);
 }
 
 void fragment() {
@@ -18,25 +18,24 @@ void fragment() {
 	if((int(CAMERA_VISIBLE_LAYERS)&1)==0) {
 		vec3 worldNorms = (INV_VIEW_MATRIX * vec4(NORMAL.xyz, 0.0)).xyz;
 
-		worldNorms = normalize(worldNorms);
+		//worldNorms = normalize(worldNorms);
 
 		//ALBEDO.rgb = worldNorms;
 		//ALBEDO.rgb = worldNorms * 2.0 + 1.0;
 
-		vec3 boundedWorldNorms = normalize((worldNorms + 1.0) / 2.0);
-
-		float halfDepth = FRAGCOORD.z * 0.5;
+		vec3 boundedWorldNorms = normalize(worldNorms) / 2.0 + 0.5;
 
 		ALBEDO.rgb = vec3(0.0);
-		EMISSION.rgb = boundedWorldNorms.xyz;
-		//EMISSION.b = boundedWorldNorms.z > 0.5 ? halfDepth + 0.5 : halfDepth;
+		//EMISSION.rgb = worldNorms.xyz;
+		//EMISSION.rgb = boundedWorldNorms.xyz;
+		EMISSION.rb = boundedWorldNorms.xz;
+		EMISSION.g = FRAGCOORD.z;
 		//ALPHA = transparent.w;
 	} else {
 		ALBEDO = COLOR.xyz;
 	}
 
 	camera_visible_layers = CAMERA_VISIBLE_LAYERS;
-
 }
 
 void light() {

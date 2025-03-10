@@ -30,9 +30,24 @@ ssao_light_affect = 0.08
 ssil_radius = 5.95
 ssil_intensity = 0.53
 sdfgi_bounce_feedback = 0.26
-fog_enabled = true
-fog_light_energy = 1.95
-fog_density = 0.0019
+fog_mode = 1
+fog_light_color = Color(1, 1, 1, 1)
+fog_light_energy = 28.53
+fog_density = 1.0
+fog_sky_affect = 0.0
+fog_height = 1024.0
+fog_height_density = -16.0
+fog_depth_curve = 901250.0
+fog_depth_begin = 772.1
+fog_depth_end = 983.8
+volumetric_fog_density = 0.005
+volumetric_fog_albedo = Color(0.662453, 0.662452, 0.662452, 1)
+volumetric_fog_emission_energy = 5.35
+volumetric_fog_gi_inject = 16.0
+volumetric_fog_anisotropy = -0.1
+volumetric_fog_length = 1024.0
+volumetric_fog_detail_spread = 6.0
+volumetric_fog_ambient_inject = 1.33
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_ak8u3"]
 
@@ -53,8 +68,10 @@ script = ExtResource("2_5yn84")
 coefficientOfLift = 0.17
 
 [node name="PlaneModel" parent="DepthNormalSubViewport" instance=ExtResource("3_swi1m")]
-mass = 40.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mass = 10.0
 THRUST_ACCEL = 20.0
+useThrust = false
 
 [node name="OrthoCam" type="Camera3D" parent="DepthNormalSubViewport/PlaneModel"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.5, 0)
@@ -64,7 +81,7 @@ projection = 1
 current = true
 size = 6.0
 near = 0.001
-far = 5.73
+far = 5.5
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0c3bt")
@@ -73,7 +90,7 @@ compositor = SubResource("Compositor_piwhr")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
 transform = Transform3D(0.589586, -0.763042, 0.264869, 0.149966, 0.42564, 0.892379, -0.793661, -0.486413, 0.365382, 0, 6.93079, 5.14143)
-light_energy = 0.452
+light_energy = 0.773
 light_cull_mask = 4293918723
 directional_shadow_mode = 0
 directional_shadow_fade_start = 1.0
@@ -83,18 +100,20 @@ directional_shadow_max_distance = 8192.0
 transform = Transform3D(-4.37114e-08, -0.5, 0.866025, 0, 0.866025, 0.5, -1, 2.18557e-08, -3.78552e-08, 1, 0.6, 0)
 cull_mask = 3
 current = true
+far = 1000.0
 
 [node name="Terrain" parent="." instance=ExtResource("4_5p7s3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -88, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -78.5292, 0)
 script = ExtResource("3_wt4pn")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(328, 372.75)
-scale = Vector2(1.28906, 1.06152)
+position = Vector2(82.5003, 561.75)
+scale = Vector2(0.330077, 0.32324)
 texture = SubResource("ViewportTexture_d0sah")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="Sprite2D"]
 offset_left = -250.0
-offset_top = -260.0
-offset_right = 317.0
+offset_top = -259.0
+offset_right = 298.0
 offset_bottom = 264.0
+stretch_mode = 3

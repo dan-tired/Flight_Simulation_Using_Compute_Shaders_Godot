@@ -50,17 +50,18 @@ void main() {
     }
 
     //vec3 norm = normalize((texel_col.xyz * 2.0f) - 1.0f);
-    float missingZ = texel_col.z > 0.5f ? 1.0f : -1.0f;
 
     vec3 fixedNorm = (texel_col.xyz * 2.0f) - 1.0f;
-    
-    missingZ *= sqrt(1 - (pow(fixedNorm.x, 2.0f) + pow(fixedNorm.y, 2.0f)));
+
+    float missingY = -sqrt(1.0f - (pow(fixedNorm.x, 2.0f) + pow(fixedNorm.z, 2.0f)));
 
     vec3 norm = vec3(
         fixedNorm.x,
-        fixedNorm.y,
+        missingY,
         fixedNorm.z
     );
+
+    norm = normalize(norm);
 
     // The linear velocity of the plane
     vec3 vel = vec3(
@@ -112,12 +113,12 @@ void main() {
     //if(texel_col.w > 0.0 && dot(norm, vec3(0.0, 1.0, 0.0)) < 0.0f) {
     //    atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
     //}
- 
-    if(texel_col.w > 0.0f && acos(dot(norm, windVel)/(length(norm) * length(windVel))) < M_PI) {
-    //if(texel_col.w > 0.0f) {
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 0], norm.x);
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 1], norm.y);
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 2], norm.z);
+
+    //if(texel_col.w > 0.0f && acos(dot(norm, windVel)/(length(norm) * length(windVel))) < M_PI) {
+    if(texel_col.w > 0.0f && dot(norm, windVel) < 0.01f) {
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 0], liftForce.x);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 1], liftForce.y);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 2], liftForce.z);
     }
     //}
 }

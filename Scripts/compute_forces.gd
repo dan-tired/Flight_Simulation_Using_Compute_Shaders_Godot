@@ -60,8 +60,8 @@ func _process(_delta: float) -> void:
 	#print(totalForce)
 	#print()
 
-func _physics_process(_delta: float) -> void:
-	#plane.apply_central_force(totalForce)
+func _physics_process(delta: float) -> void:
+	plane.apply_central_force(totalForce * delta)
 	pass
 	
 
@@ -87,7 +87,9 @@ func _init_compute_code() -> void:
 	#img.save_png("test.png")
 	
 	fmt = RDTextureFormat.new()
+	#fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
 	fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_SRGB
+	#fmt.format = RenderingDevice.DATA_FORMAT_R16G16B16A16_UNORM
 	fmt.width = texture_size.y
 	fmt.height = texture_size.x
 	fmt.usage_bits = (
@@ -198,20 +200,20 @@ func _render_process() -> void:
 	## This only prints to your terminal when you run godot from your terminal
 	## But it works! And when it runs you can see the outline of the plane forming in the numbers
 	
-	if(Input.is_key_label_pressed(KEY_P)) :
-		printraw("---------------------------------------------------------------\n")
-		for i in out_array.size() :
-			if i % 3 == 0 :
-				printraw("T,")
-			if out_array[i] != 0 :
-				printraw(str(1) + ",")
-				#printraw(str(snapped(out_array[i], 0.01)) + ",")
-			else :
-				var printer = "." + ","
-				printraw(printer)
-			if i % (64 * 3) == ((64 * 3) - 1) :
-				printraw("\n")
-		printraw("---------------------------------------------------------------\n")
+	#if(Input.is_key_label_pressed(KEY_P)) :
+		#printraw("---------------------------------------------------------------\n")
+		#for i in out_array.size() :
+			#if i % 3 == 0 :
+				#printraw("T,")
+			#if out_array[i] != 0 :
+				#printraw(str(1) + ",")
+				##printraw(str(snapped(out_array[i], 0.01)) + ",")
+			#else :
+				#var printer = "." + ","
+				#printraw(printer)
+			#if i % (64 * 3) == ((64 * 3) - 1) :
+				#printraw("\n")
+		#printraw("---------------------------------------------------------------\n")
 	
 	#for i in out_array.size() :
 		#if i % 3 == 0 : printraw("\n")
@@ -229,10 +231,13 @@ func rid_create_sampler() -> RID :
 	return sampler
 
 func _free_resources() -> void :
+	
+	# Commented out RIDs are RIDs that are invalid when you try free them
+	# I assume this means they don't need to be freed
 	rd.free_rid(shader)
 	rd.free_rid(input_buffer)
 	rd.free_rid(output_buffer)
-	rd.free_rid(uniform_set)
+	#rd.free_rid(uniform_set)
 	rd.free_rid(input_texture)
 	rd.free_rid(sampler)
-	rd.free_rid(pipeline)
+	#rd.free_rid(pipeline)
