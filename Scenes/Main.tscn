@@ -57,14 +57,14 @@ mass = 40.0
 THRUST_ACCEL = 20.0
 
 [node name="OrthoCam" type="Camera3D" parent="DepthNormalSubViewport/PlaneModel"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.19564, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.5, 0)
 cull_mask = 16
 environment = SubResource("Environment_tewqb")
 projection = 1
 current = true
 size = 6.0
 near = 0.001
-far = 20.0
+far = 5.73
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0c3bt")
@@ -89,12 +89,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -88, 0)
 script = ExtResource("3_wt4pn")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(132, 527.75)
-scale = Vector2(0.523438, 0.456055)
+position = Vector2(328, 372.75)
+scale = Vector2(1.28906, 1.06152)
 texture = SubResource("ViewportTexture_d0sah")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="Sprite2D"]
 offset_left = -250.0
-offset_top = -201.0
-offset_right = 272.0
+offset_top = -260.0
+offset_right = 317.0
 offset_bottom = 264.0

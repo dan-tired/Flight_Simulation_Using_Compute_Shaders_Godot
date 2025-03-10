@@ -1,6 +1,7 @@
 #[compute]
 #version 450
 #extension GL_EXT_shader_atomic_float : enable
+#define M_PI 3.1415926535897932384626433832795
 
 layout(set = 0, binding = 0) uniform sampler2D normalImage;
 
@@ -37,8 +38,8 @@ void fragLiftForce(in vec3 norm, in float angle, in float liftCoef, in float pre
 
     float density = pressure / (R * avgTempK);
 
-    LiftForce = -(density * 0.5 * liftCoef * pow(speed, 2) * pixelSize * norm);
-    //LiftForce = (density * 0.5 * liftCoef * pow(speed, 2) * pixelSize * vec3(0.0f, 1.0f, 0.0f));
+    LiftForce = -(density * 0.5f * liftCoef * pow(speed, 2.0f) * pixelSize * norm);
+    //LiftForce = (density * 0.5f * liftCoef * pow(speed, 2.0f) * pixelSize * vec3(0.0f, 1.0f, 0.0f));
 }
 
 void main() {
@@ -48,7 +49,18 @@ void main() {
         return;
     }
 
-    vec3 norm = normalize((texel_col.xyz * 2.0f) - 1.0f);
+    //vec3 norm = normalize((texel_col.xyz * 2.0f) - 1.0f);
+    float missingZ = texel_col.z > 0.5f ? 1.0f : -1.0f;
+
+    vec3 fixedNorm = (texel_col.xyz * 2.0f) - 1.0f;
+    
+    missingZ *= sqrt(1 - (pow(fixedNorm.x, 2.0f) + pow(fixedNorm.y, 2.0f)));
+
+    vec3 norm = vec3(
+        fixedNorm.x,
+        fixedNorm.y,
+        fixedNorm.z
+    );
 
     // The linear velocity of the plane
     vec3 vel = vec3(
@@ -83,7 +95,7 @@ void main() {
     vec3 wingDir = normalize(cross(planeIntersectNorm, norm));
 
     // The angle of attack of the "wind"
-    float AoA = acos(dot(wingDir, windVel));
+    float AoA = acos(dot(wingDir, windVel) / (length(wingDir) * length(windVel)));
 
     // Air pressure at sea level is 101,325 Pa
     // Acceleration due to gravity is 9.8 m/s^2
@@ -100,11 +112,12 @@ void main() {
     //if(texel_col.w > 0.0 && dot(norm, vec3(0.0, 1.0, 0.0)) < 0.0f) {
     //    atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
     //}
-
-    // 
-    if(texel_col.w > 0.0f && dot(norm, windVel) < -0.1f) {
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 0], liftForce.x);
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 1], liftForce.y);
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 2], liftForce.z);
+ 
+    if(texel_col.w > 0.0f && acos(dot(norm, windVel)/(length(norm) * length(windVel))) < M_PI) {
+    //if(texel_col.w > 0.0f) {
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 0], norm.x);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 1], norm.y);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 2], norm.z);
     }
+    //}
 }

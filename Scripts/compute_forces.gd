@@ -54,14 +54,14 @@ func _process(_delta: float) -> void:
 	
 	RenderingServer.call_on_render_thread(_render_process)
 	
-	print("frame")
-	print(plane.linear_velocity)
-	print(totalForce.length())
-	print(totalForce)
-	print()
+	#print("frame")
+	#print(plane.linear_velocity)
+	#print(totalForce.length())
+	#print(totalForce)
+	#print()
 
 func _physics_process(_delta: float) -> void:
-	plane.apply_central_force(totalForce)
+	#plane.apply_central_force(totalForce)
 	pass
 	
 
@@ -197,16 +197,21 @@ func _render_process() -> void:
 	
 	## This only prints to your terminal when you run godot from your terminal
 	## But it works! And when it runs you can see the outline of the plane forming in the numbers
-	#for i in out_array.size() :
-		#if i % 3 == 0 :
-			#printraw("T,")
-		#if out_array[i] != 0 :
-			#printraw(str(1) + ",")
-		#else :
-			#var printer = "." + ","
-			#printraw(printer)
-		#if i % (64 * 3) == ((64 * 3) - 1) :
-			#printraw("\n")
+	
+	if(Input.is_key_label_pressed(KEY_P)) :
+		printraw("---------------------------------------------------------------\n")
+		for i in out_array.size() :
+			if i % 3 == 0 :
+				printraw("T,")
+			if out_array[i] != 0 :
+				printraw(str(1) + ",")
+				#printraw(str(snapped(out_array[i], 0.01)) + ",")
+			else :
+				var printer = "." + ","
+				printraw(printer)
+			if i % (64 * 3) == ((64 * 3) - 1) :
+				printraw("\n")
+		printraw("---------------------------------------------------------------\n")
 	
 	#for i in out_array.size() :
 		#if i % 3 == 0 : printraw("\n")

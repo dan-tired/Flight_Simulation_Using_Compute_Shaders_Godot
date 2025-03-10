@@ -22,8 +22,14 @@ void fragment() {
 
 		//ALBEDO.rgb = worldNorms;
 		//ALBEDO.rgb = worldNorms * 2.0 + 1.0;
+
+		vec3 boundedWorldNorms = normalize((worldNorms + 1.0) / 2.0);
+
+		float halfDepth = FRAGCOORD.z * 0.5;
+
 		ALBEDO.rgb = vec3(0.0);
-		EMISSION.rgb = (worldNorms + 1.0) / 2.0;
+		EMISSION.rgb = boundedWorldNorms.xyz;
+		//EMISSION.b = boundedWorldNorms.z > 0.5 ? halfDepth + 0.5 : halfDepth;
 		//ALPHA = transparent.w;
 	} else {
 		ALBEDO = COLOR.xyz;
