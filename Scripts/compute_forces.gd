@@ -23,6 +23,8 @@ var ready_complete : bool
 
 var plane : RigidBody3D
 var camSize : float
+var camNear : float
+var camFar : float
 
 signal compute_code_ready
 
@@ -35,6 +37,8 @@ func _ready() -> void:
 	var cam : Camera3D = get_parent().get_node("DepthNormalSubViewport/PlaneModel/OrthoCam")
 	
 	camSize = cam.size
+	camNear = cam.near
+	camFar = cam.far
 	
 	await RenderingServer.frame_post_draw
 	
@@ -61,7 +65,7 @@ func _process(_delta: float) -> void:
 	#print()
 
 func _physics_process(delta: float) -> void:
-	plane.apply_central_force(totalForce * delta)
+	#plane.apply_central_force(totalForce * delta)
 	pass
 	
 
@@ -112,14 +116,15 @@ func _init_compute_code() -> void:
 	
 	# Creating array for input
 	var array_initialiser = []
-	for i in 7 :
+	for i in 9 :
 		array_initialiser.append(0)
 	var input_buffer_pba := PackedInt32Array(array_initialiser).to_byte_array()
 	input_buffer = rd.storage_buffer_create(input_buffer_pba.size(), input_buffer_pba)
 	
 	# Creating 2D array for output
+	# #work_groups_x * #work_groups_y * 3D vector * (norm and fragpos)
 	array_initialiser = []
-	for i in (texture_size.x / 8) * (texture_size.y / 8) * 3:
+	for i in (texture_size.x / 8) * (texture_size.y / 8) * 3 * 2:
 		array_initialiser.append(0)
 	var output_buffer_pba := PackedInt32Array(array_initialiser).to_byte_array()
 	output_buffer = rd.storage_buffer_create(output_buffer_pba.size(), output_buffer_pba)
@@ -167,7 +172,12 @@ func _render_process() -> void:
 	input_array[5] = camSize
 	
 	# Passing in the texture dimensions (square image so only one value will do)
-	input_array[6] = texture_size.x;
+	input_array[6] = texture_size.x
+	
+	# Passing in near and far planes of camera to reverse engineer distance 
+	# from the depth buffer float
+	input_array[7] = camNear
+	input_array[8] = camFar
 	
 	pba = input_array.to_byte_array()
 	
@@ -200,20 +210,20 @@ func _render_process() -> void:
 	## This only prints to your terminal when you run godot from your terminal
 	## But it works! And when it runs you can see the outline of the plane forming in the numbers
 	
-	#if(Input.is_key_label_pressed(KEY_P)) :
-		#printraw("---------------------------------------------------------------\n")
-		#for i in out_array.size() :
-			#if i % 3 == 0 :
-				#printraw("T,")
-			#if out_array[i] != 0 :
-				#printraw(str(1) + ",")
-				##printraw(str(snapped(out_array[i], 0.01)) + ",")
-			#else :
-				#var printer = "." + ","
-				#printraw(printer)
-			#if i % (64 * 3) == ((64 * 3) - 1) :
-				#printraw("\n")
-		#printraw("---------------------------------------------------------------\n")
+	if(Input.is_key_label_pressed(KEY_P)) :
+		printraw("---------------------------------------------------------------\n")
+		for i in out_array.size() :
+			if i % 3 == 0 :
+				printraw("T,")
+			if out_array[i] != 0 :
+				printraw(str(1) + ",")
+				#printraw(str(snapped(out_array[i], 0.01)) + ",")
+			else :
+				var printer = "." + ","
+				printraw(printer)
+			if i % (64 * 3) == ((64 * 3) - 1) :
+				printraw("\n")
+		printraw("---------------------------------------------------------------\n")
 	
 	#for i in out_array.size() :
 		#if i % 3 == 0 : printraw("\n")

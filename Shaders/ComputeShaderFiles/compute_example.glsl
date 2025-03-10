@@ -82,6 +82,20 @@ void main() {
     // Pixel width of texture
     float texWidth = input_buffer.data[6];
 
+    // Orthographic camera near and far planes
+    float camNear = input_buffer.data[7];
+    float camFar = input_buffer.data[8];
+
+    float depth = (camFar - camNear) * (1 - texel_col.y);
+
+    vec3 forcePos = vec3(
+        (gl_GlobalInvocationID.x - (texWidth / 2.0f)) * camSize,
+        depth,
+        (gl_GlobalInvocationID.y - (texWidth / 2.0f)) * camSize
+    );
+
+    forcePos /= (gl_WorkGroupSize.x * gl_WorkGroupSize.y);
+
     // Currently I am defining "wind" to be the direction opposite to the direction of travel
     // Aerodynamic force is also dependent on the velocity and mass of the fluid, not the object
         // Meaning, we need to be using windVel in lift calculations
@@ -114,11 +128,12 @@ void main() {
     //    atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
     //}
 
-    //if(texel_col.w > 0.0f && acos(dot(norm, windVel)/(length(norm) * length(windVel))) < M_PI) {
     if(texel_col.w > 0.0f && dot(norm, windVel) < 0.01f) {
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 0], liftForce.x);
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 1], liftForce.y);
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * 64 * 3) + 2], liftForce.z);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2) + 0], liftForce.x);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2) + 1], liftForce.y);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2) + 2], liftForce.z);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 0], liftForce.x);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 1], liftForce.y);
+        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 2], liftForce.z);
     }
-    //}
 }
