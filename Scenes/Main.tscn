@@ -68,18 +68,18 @@ script = ExtResource("2_5yn84")
 coefficientOfLift = 0.17
 
 [node name="PlaneModel" parent="DepthNormalSubViewport" instance=ExtResource("3_swi1m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mass = 10.0
 THRUST_ACCEL = 20.0
 useThrust = false
 
 [node name="OrthoCam" type="Camera3D" parent="DepthNormalSubViewport/PlaneModel"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.5, 0)
+rotation_order = 0
 cull_mask = 16
 environment = SubResource("Environment_tewqb")
 projection = 1
 current = true
-size = 6.0
+size = 7.0
 near = 0.001
 far = 5.5
 
@@ -103,17 +103,17 @@ current = true
 far = 1000.0
 
 [node name="Terrain" parent="." instance=ExtResource("4_5p7s3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -78.5292, 0)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -120, 0)
 script = ExtResource("3_wt4pn")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(82.5003, 561.75)
-scale = Vector2(0.330077, 0.32324)
+position = Vector2(107.5, 538.25)
+scale = Vector2(0.427733, 0.415038)
 texture = SubResource("ViewportTexture_d0sah")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="Sprite2D"]
 offset_left = -250.0
-offset_top = -259.0
-offset_right = 298.0
+offset_top = -404.0
+offset_right = 447.0
 offset_bottom = 264.0
 stretch_mode = 3

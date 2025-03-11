@@ -26,6 +26,9 @@ var camSize : float
 var camNear : float
 var camFar : float
 
+var forceArr : PackedVector3Array
+var forcePosArr : PackedVector3Array
+
 signal compute_code_ready
 
 # Called when the node enters the scene tree for the first time.
@@ -66,8 +69,9 @@ func _process(_delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	#plane.apply_central_force(totalForce * delta)
-	pass
-	
+	if forceArr.size() > 0 :
+		for i in forceArr.size() :
+			plane.apply_force(forceArr[i] * delta, forcePosArr[i])
 
 func _exit_tree() -> void:
 	RenderingServer.call_on_render_thread(_free_resources)
@@ -91,9 +95,7 @@ func _init_compute_code() -> void:
 	#img.save_png("test.png")
 	
 	fmt = RDTextureFormat.new()
-	#fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
-	fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_SRGB
-	#fmt.format = RenderingDevice.DATA_FORMAT_R16G16B16A16_UNORM
+	fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_SRGB # Preserves colour properly
 	fmt.width = texture_size.y
 	fmt.height = texture_size.x
 	fmt.usage_bits = (
@@ -198,31 +200,55 @@ func _render_process() -> void:
 	var out_array = pba.to_float32_array()
 	
 	totalForce = Vector3()
+	forceArr = PackedVector3Array()
+	forcePosArr = PackedVector3Array()
+	var forceComponent := Vector3()
+	var forcePos := Vector3()
 	
-	for i in len(out_array) :
-		if i % 3 == 0 :
-			totalForce.x += out_array[i]
-		elif i % 3 == 1 :
-			totalForce.y += out_array[i]
+	for i in out_array.size() :
+		if int(i / (3 * x_groups)) % 2 == 0 :
+			#printraw("0")
+			if i % 3 == 0 :
+				forceComponent.x = out_array[i]
+			elif i % 3 == 1 :
+				forceComponent.y = out_array[i]
+			else :
+				forceComponent.z = out_array[i]
+				totalForce += forceComponent
+				forceArr.append(forceComponent)
 		else :
-			totalForce.z += out_array[i]
+			#printraw("1")
+			if i % 3 == 0 :
+				forcePos.x = out_array[i]
+			elif i % 3 == 1 :
+				forcePos.y = out_array[i]
+			else :
+				forcePos.z = out_array[i]
+				forcePosArr.append(forcePos)
+		
+		#if i % (x_groups * 3) == ((x_groups * 3) - 1) :
+			#printraw("\n")
 	
 	## This only prints to your terminal when you run godot from your terminal
 	## But it works! And when it runs you can see the outline of the plane forming in the numbers
 	
 	if(Input.is_key_label_pressed(KEY_P)) :
 		printraw("---------------------------------------------------------------\n")
-		for i in out_array.size() :
-			if i % 3 == 0 :
-				printraw("T,")
-			if out_array[i] != 0 :
-				printraw(str(1) + ",")
-				#printraw(str(snapped(out_array[i], 0.01)) + ",")
-			else :
-				var printer = "." + ","
-				printraw(printer)
-			if i % (64 * 3) == ((64 * 3) - 1) :
-				printraw("\n")
+		#for i in out_array.size() :
+			#if int(i / (3 * x_groups)) % 2 == 0 :
+				#printraw("0")
+			#else :
+				#printraw("1")
+			##if i % 3 == 0 :
+				##printraw("T,")
+			#if out_array[i] != 0 :
+				#printraw(str(1) + ",")
+				##printraw(str(snapped(out_array[i], 0.01)) + ",")
+			#else :
+				#var printer = "." + ","
+				#printraw(printer)
+			#if i % (x_groups * 3) == ((x_groups * 3) - 1) :
+				#printraw("\n")
 		printraw("---------------------------------------------------------------\n")
 	
 	#for i in out_array.size() :

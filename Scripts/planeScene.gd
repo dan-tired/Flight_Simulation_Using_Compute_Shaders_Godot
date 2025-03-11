@@ -6,7 +6,13 @@ var thrust : float = 0.0
 
 var direction : Vector3 = Vector3(-1.0, 0.0, 0.0)
 
+var camDist : float
+
 @export var useThrust : bool = true
+
+func _ready() -> void:
+	camDist = $OrthoCam.position.y
+	apply_central_impulse(Vector3(-30, 0, 0))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
@@ -32,4 +38,7 @@ func _physics_process(delta: float) -> void:
 		apply_central_force(direction * thrust)
 		
 		#print(global_position)
+	
+	$OrthoCam.global_rotation = Vector3(90, 0, 0)
+	$OrthoCam.global_position = position + camDist * (Vector3(0.0, 1.0, 0.0))
 	
