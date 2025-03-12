@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dw41nmvofjv0c"]
+[gd_scene load_steps=17 format=3 uid="uid://dw41nmvofjv0c"]
 
 [ext_resource type="Script" uid="uid://bxnt8n23173nr" path="res://Scripts/main.gd" id="1_skjnb"]
 [ext_resource type="Script" uid="uid://c7p8uv368daly" path="res://Scripts/compute_forces.gd" id="2_5yn84"]
@@ -53,6 +53,23 @@ volumetric_fog_ambient_inject = 1.33
 
 [sub_resource type="Compositor" id="Compositor_piwhr"]
 
+[sub_resource type="Gradient" id="Gradient_pbw6q"]
+offsets = PackedFloat32Array(0.966321, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_v1gob"]
+gradient = SubResource("Gradient_pbw6q")
+width = 256
+height = 256
+
+[sub_resource type="Gradient" id="Gradient_jw32o"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_50glp"]
+gradient = SubResource("Gradient_jw32o")
+width = 220
+height = 220
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_d0sah"]
 viewport_path = NodePath("DepthNormalSubViewport")
 
@@ -67,12 +84,13 @@ render_target_update_mode = 4
 script = ExtResource("2_5yn84")
 coefficientOfLift = 0.17
 
-[node name="PlaneModel" parent="DepthNormalSubViewport" instance=ExtResource("3_swi1m")]
+[node name="PlaneScene" parent="DepthNormalSubViewport" instance=ExtResource("3_swi1m")]
 mass = 10.0
 THRUST_ACCEL = 20.0
+useAilerons = true
 useThrust = false
 
-[node name="OrthoCam" type="Camera3D" parent="DepthNormalSubViewport/PlaneModel"]
+[node name="OrthoCam" type="Camera3D" parent="DepthNormalSubViewport/PlaneScene"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.5, 0)
 rotation_order = 0
 cull_mask = 16
@@ -106,14 +124,25 @@ far = 1000.0
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -120, 0)
 script = ExtResource("3_wt4pn")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(107.5, 538.25)
-scale = Vector2(0.427733, 0.415038)
-texture = SubResource("ViewportTexture_d0sah")
-
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Sprite2D"]
-offset_left = -250.0
-offset_top = -404.0
-offset_right = 447.0
-offset_bottom = 264.0
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
 stretch_mode = 3
+alignment_horizontal = 2
+alignment_vertical = 2
+
+[node name="Black" type="Sprite2D" parent="AspectRatioContainer"]
+position = Vector2(128, -128)
+texture = SubResource("GradientTexture2D_v1gob")
+
+[node name="White" type="Sprite2D" parent="AspectRatioContainer"]
+position = Vector2(128, -128)
+texture = SubResource("GradientTexture2D_50glp")
+
+[node name="Sprite2D" type="Sprite2D" parent="AspectRatioContainer"]
+position = Vector2(128, -128)
+scale = Vector2(0.4, 0.4)
+texture = SubResource("ViewportTexture_d0sah")
+region_rect = Rect2(0, 0, 512, 512)

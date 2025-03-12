@@ -2,6 +2,8 @@ extends SubViewport
 
 @export var coefficientOfLift : float
 
+@export var applyCentralForce : bool
+
 var rd : RenderingDevice
 var texture_size : Vector2i
 
@@ -35,9 +37,9 @@ signal compute_code_ready
 func _ready() -> void:
 	render_target_update_mode = UpdateMode.UPDATE_ALWAYS
 	
-	plane = get_parent().get_node("DepthNormalSubViewport/PlaneModel")
+	plane = get_parent().get_node("DepthNormalSubViewport/PlaneScene")
 	
-	var cam : Camera3D = get_parent().get_node("DepthNormalSubViewport/PlaneModel/OrthoCam")
+	var cam : Camera3D = get_parent().get_node("DepthNormalSubViewport/PlaneScene/OrthoCam")
 	
 	camSize = cam.size
 	camNear = cam.near
@@ -68,10 +70,12 @@ func _process(_delta: float) -> void:
 	#print()
 
 func _physics_process(delta: float) -> void:
-	#plane.apply_central_force(totalForce * delta)
-	if forceArr.size() > 0 :
-		for i in forceArr.size() :
-			plane.apply_force(forceArr[i] * delta, forcePosArr[i])
+	if applyCentralForce :
+		plane.apply_central_force(totalForce * delta)
+	else :
+		if forceArr.size() > 0 :
+			for i in forceArr.size() :
+				plane.apply_force(forceArr[i] * delta, forcePosArr[i])
 
 func _exit_tree() -> void:
 	RenderingServer.call_on_render_thread(_free_resources)
@@ -205,9 +209,8 @@ func _render_process() -> void:
 	var forceComponent := Vector3()
 	var forcePos := Vector3()
 	
-	for i in out_array.size() :
-		if int(i / (3 * x_groups)) % 2 == 0 :
-			#printraw("0")
+	if applyCentralForce :
+		for i in out_array.size() :
 			if i % 3 == 0 :
 				forceComponent.x = out_array[i]
 			elif i % 3 == 1 :
@@ -215,19 +218,28 @@ func _render_process() -> void:
 			else :
 				forceComponent.z = out_array[i]
 				totalForce += forceComponent
-				forceArr.append(forceComponent)
-		else :
-			#printraw("1")
-			if i % 3 == 0 :
-				forcePos.x = out_array[i]
-			elif i % 3 == 1 :
-				forcePos.y = out_array[i]
+	else :
+		for i in out_array.size() :
+			if int(i / (3 * x_groups)) % 2 == 0 :
+				#printraw("0")
+				if i % 3 == 0 :
+					forceComponent.x = out_array[i]
+				elif i % 3 == 1 :
+					forceComponent.y = out_array[i]
+				else :
+					forceComponent.z = out_array[i]
+					forceArr.append(forceComponent)
 			else :
-				forcePos.z = out_array[i]
-				forcePosArr.append(forcePos)
-		
-		#if i % (x_groups * 3) == ((x_groups * 3) - 1) :
-			#printraw("\n")
+				#printraw("1")
+				if i % 3 == 0 :
+					forcePos.x = out_array[i]
+				elif i % 3 == 1 :
+					forcePos.y = out_array[i]
+				else :
+					forcePos.z = out_array[i]
+					forcePosArr.append(forcePos)
+			#if i % (x_groups * 3) == ((x_groups * 3) - 1) :
+				#printraw("\n")
 	
 	## This only prints to your terminal when you run godot from your terminal
 	## But it works! And when it runs you can see the outline of the plane forming in the numbers
