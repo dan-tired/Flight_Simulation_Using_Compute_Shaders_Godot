@@ -88,9 +88,8 @@ coefficientOfLift = 0.17
 mass = 10.0
 THRUST_ACCEL = 20.0
 useAilerons = true
-useThrust = false
 
-[node name="OrthoCam" type="Camera3D" parent="DepthNormalSubViewport/PlaneScene"]
+[node name="OrthoCam" type="Camera3D" parent="DepthNormalSubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.5, 0)
 rotation_order = 0
 cull_mask = 16

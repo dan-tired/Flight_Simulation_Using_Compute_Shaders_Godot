@@ -39,7 +39,7 @@ func _ready() -> void:
 	
 	plane = get_parent().get_node("DepthNormalSubViewport/PlaneScene")
 	
-	var cam : Camera3D = get_parent().get_node("DepthNormalSubViewport/PlaneScene/OrthoCam")
+	var cam : Camera3D = get_parent().get_node("DepthNormalSubViewport/OrthoCam")
 	
 	camSize = cam.size
 	camNear = cam.near

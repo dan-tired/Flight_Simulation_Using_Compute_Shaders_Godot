@@ -10,15 +10,18 @@ var direction : Vector3 = Vector3(-1.0, 0.0, 0.0)
 
 var camDist : float
 
+var orthoCam : Camera3D 
+
 func _ready() -> void:
-	camDist = $OrthoCam.position.y
+	orthoCam = get_parent().get_node("OrthoCam")
+	camDist = orthoCam.position.y
 	$PlaneBody.useAilerons = useAilerons
 	
 	apply_central_impulse(Vector3(-30, 0, 0))
 
-func process(_delta : float) -> void :
-	$OrthoCam.rotation = Vector3(90, 0, 0)
-	$OrthoCam.global_position = global_position + camDist * (Vector3(0.0, 1.0, 0.0))
+func _process(_delta : float) -> void :
+	orthoCam.global_position = self.global_position + camDist * (Vector3(0.0, 1.0, 0.0))
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
