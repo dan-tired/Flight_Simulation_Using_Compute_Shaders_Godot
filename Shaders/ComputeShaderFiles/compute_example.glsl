@@ -5,6 +5,9 @@
 
 layout(set = 0, binding = 0) uniform sampler2D normalImage;
 
+shared int numRealInvocations;
+shared vec3 totalPositionCalculated;
+
 layout(set = 0, binding = 1, std430) buffer InputBuf {
     float data[];
 }
@@ -17,16 +20,16 @@ output_buffer;
 
 layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
-void fragAerodynamicForce(in float speed, in vec3 norm, in float pressure, in float pixelSize, out vec3 TotalAerodynamicForce) {
+void fragAerodynamicForce(in float speed, in vec3 norm, in float pressure, in float pixelWidth, out vec3 TotalAerodynamicForce) {
     // Total Aerodynamic Force = Sum(pressure * vector normal * fragment area)
     // We assume that pressure is proportional to velocity squared
 
     float pressureWithSpeed = pressure * pow(speed, 2);
 
-    TotalAerodynamicForce = - (norm * pressureWithSpeed * pixelSize);
+    TotalAerodynamicForce = - (norm * pressureWithSpeed * pixelWidth);
 }
 
-void fragLiftForce(in vec3 norm, in float angle, in float liftCoef, in float pressure, in float speed, in float pixelSize, out vec3 LiftForce) {
+void fragLiftForce(in vec3 norm, in float angle, in float liftCoef, in float pressure, in float speed, in float pixelWidth, out vec3 LiftForce) {
     vec3 fragLift;
 
     // Specific gas constant of dry air
@@ -38,12 +41,23 @@ void fragLiftForce(in vec3 norm, in float angle, in float liftCoef, in float pre
 
     float density = pressure / (R * avgTempK);
 
-    LiftForce = -(density * 0.5f * liftCoef * pow(speed, 2.0f) * pixelSize * norm);
-    //LiftForce = (density * 0.5f * liftCoef * pow(speed, 2.0f) * pixelSize * vec3(0.0f, 1.0f, 0.0f));
+    float cosTheta = dot(norm, vec3(0.0f, -1.0f, 0.0f)) / length(norm); 
+
+    float actualPixelSize = pow(pixelWidth / cosTheta, 2);
+    //float actualPixelSize = pixelWidth / cosTheta;
+
+    LiftForce = -(density * 0.5f * liftCoef * pow(speed, 2.0f) * actualPixelSize * norm);
+    //LiftForce = -(density * 0.5f * liftCoef * pow(speed, 2.0f) * pow(pixelWidth, 2) * norm);
+    //LiftForce = (density * 0.5f * liftCoef * pow(speed, 2.0f) * actualPixelSize * vec3(0.0f, 1.0f, 0.0f));
 }
 
 void main() {
     vec4 texel_col = texture(normalImage, vec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y));
+
+    if(gl_LocalInvocationID.x == 0) {
+        numRealInvocations = 0;
+        totalPositionCalculated = vec3(0.0f, 0.0f, 0.0f);
+    }
 
     if (texel_col.a == 0.f) {
         return;
@@ -86,15 +100,18 @@ void main() {
     float camNear = input_buffer.data[7];
     float camFar = input_buffer.data[8];
 
-    float depth = (camFar - camNear) * (1 - texel_col.y);
+    // Camera y position relative to the plane
+    float camRelPos = input_buffer.data[9];
+
+    float depth = (camFar - camNear) * (1 - texel_col.g);
 
     vec3 forcePos = vec3(
-        (gl_GlobalInvocationID.x - (texWidth / 2.0f)) * camSize,
-        depth,
-        (gl_GlobalInvocationID.y - (texWidth / 2.0f)) * camSize
+        ((gl_GlobalInvocationID.x - (texWidth / 2.0f)) / texWidth) * camSize,
+        depth + camRelPos,
+        ((gl_GlobalInvocationID.y - (texWidth / 2.0f)) / texWidth) * camSize
     );
 
-    forcePos /= (gl_WorkGroupSize.x * gl_WorkGroupSize.y);
+    //forcePos /= (gl_WorkGroupSize.x * gl_WorkGroupSize.y);
 
     // Currently I am defining "wind" to be the direction opposite to the direction of travel
     // Aerodynamic force is also dependent on the velocity and mass of the fluid, not the object
@@ -128,12 +145,25 @@ void main() {
     //    atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
     //}
 
+    memoryBarrierShared();
+    barrier();
+
     if(texel_col.w > 0.0f && dot(norm, windVel) < 0.01f) {
         atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2) + 0], liftForce.x);
         atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2) + 1], liftForce.y);
         atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2) + 2], liftForce.z);
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 0], liftForce.x);
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 1], liftForce.y);
-        atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 2], liftForce.z);
+        //atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 0], liftForce.x);
+        //atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 1], liftForce.y);
+        //atomicAdd(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 2], liftForce.z);
+
+        atomicAdd(totalPositionCalculated.x, forcePos.x);
+        atomicAdd(totalPositionCalculated.y, forcePos.y);
+        atomicAdd(totalPositionCalculated.z, forcePos.z);
+        atomicAdd(numRealInvocations, 1);
+
+        atomicExchange(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 0], totalPositionCalculated.x/numRealInvocations);
+        atomicExchange(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 1], totalPositionCalculated.y/numRealInvocations);
+        atomicExchange(output_buffer.data[((gl_WorkGroupID.x * 3) + gl_WorkGroupID.y * gl_NumWorkGroups.x * 3 * 2 + gl_NumWorkGroups.x * 3) + 2], totalPositionCalculated.z/numRealInvocations);
+      
     }
 }

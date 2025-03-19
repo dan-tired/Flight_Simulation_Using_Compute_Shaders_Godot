@@ -27,6 +27,7 @@ var plane : RigidBody3D
 var camSize : float
 var camNear : float
 var camFar : float
+var camRelPos : float
 
 var forceArr : PackedVector3Array
 var forcePosArr : PackedVector3Array
@@ -44,6 +45,7 @@ func _ready() -> void:
 	camSize = cam.size
 	camNear = cam.near
 	camFar = cam.far
+	camRelPos = cam.position.y
 	
 	await RenderingServer.frame_post_draw
 	
@@ -70,12 +72,14 @@ func _process(_delta: float) -> void:
 	#print()
 
 func _physics_process(delta: float) -> void:
+	
 	if applyCentralForce :
 		plane.apply_central_force(totalForce * delta)
 	else :
 		if forceArr.size() > 0 :
 			for i in forceArr.size() :
 				plane.apply_force(forceArr[i] * delta, forcePosArr[i])
+	pass
 
 func _exit_tree() -> void:
 	RenderingServer.call_on_render_thread(_free_resources)
@@ -122,7 +126,7 @@ func _init_compute_code() -> void:
 	
 	# Creating array for input
 	var array_initialiser = []
-	for i in 9 :
+	for i in 10 :
 		array_initialiser.append(0)
 	var input_buffer_pba := PackedInt32Array(array_initialiser).to_byte_array()
 	input_buffer = rd.storage_buffer_create(input_buffer_pba.size(), input_buffer_pba)
@@ -185,6 +189,9 @@ func _render_process() -> void:
 	input_array[7] = camNear
 	input_array[8] = camFar
 	
+	# Passing in the camera position to make the depth calculation meaningful
+	input_array[9] = camRelPos
+	
 	pba = input_array.to_byte_array()
 	
 	# Angle of attack needs to be calculated from the vector normals
@@ -211,14 +218,16 @@ func _render_process() -> void:
 	
 	if applyCentralForce :
 		for i in out_array.size() :
-			if i % 3 == 0 :
-				forceComponent.x = out_array[i]
-			elif i % 3 == 1 :
-				forceComponent.y = out_array[i]
-			else :
-				forceComponent.z = out_array[i]
-				totalForce += forceComponent
+			if int(i / (3 * x_groups)) % 2 == 0 :
+				if i % 3 == 0 :
+					forceComponent.x = out_array[i]
+				elif i % 3 == 1 :
+					forceComponent.y = out_array[i]
+				else :
+					forceComponent.z = out_array[i]
+					totalForce += forceComponent
 	else :
+		
 		for i in out_array.size() :
 			if int(i / (3 * x_groups)) % 2 == 0 :
 				#printraw("0")
@@ -228,6 +237,10 @@ func _render_process() -> void:
 					forceComponent.y = out_array[i]
 				else :
 					forceComponent.z = out_array[i]
+					
+					if(forceComponent.is_equal_approx(Vector3(0.0, 0.0, 0.0))) :
+						continue
+					
 					forceArr.append(forceComponent)
 			else :
 				#printraw("1")
@@ -237,7 +250,19 @@ func _render_process() -> void:
 					forcePos.y = out_array[i]
 				else :
 					forcePos.z = out_array[i]
+					
+					if(forcePos.is_equal_approx(Vector3(0.0, 0.0, 0.0))) :
+						continue
+					
 					forcePosArr.append(forcePos)
+		
+		if(Input.is_key_label_pressed(KEY_P)) :
+			if(forceArr.size() == forcePosArr.size()) :
+				for i in forceArr.size() :
+					printraw(str(i) + ": " + str(forceArr[i]) + ", " + str(forcePosArr[i]) + "\n")
+			else:
+				printraw("false")
+			
 			#if i % (x_groups * 3) == ((x_groups * 3) - 1) :
 				#printraw("\n")
 	
@@ -246,22 +271,21 @@ func _render_process() -> void:
 	
 	if(Input.is_key_label_pressed(KEY_P)) :
 		printraw("---------------------------------------------------------------\n")
-		#for i in out_array.size() :
-			#if int(i / (3 * x_groups)) % 2 == 0 :
-				#printraw("0")
-			#else :
-				#printraw("1")
-			##if i % 3 == 0 :
-				##printraw("T,")
-			#if out_array[i] != 0 :
-				#printraw(str(1) + ",")
+		var counter : int = 0
+		for i in out_array.size() :
+			
+			if !is_equal_approx(float(out_array[i]),0.0) :
+				counter += 1
+				#printraw(str(int(out_array[i])) + ",")
 				##printraw(str(snapped(out_array[i], 0.01)) + ",")
 			#else :
 				#var printer = "." + ","
 				#printraw(printer)
 			#if i % (x_groups * 3) == ((x_groups * 3) - 1) :
 				#printraw("\n")
+		printraw("counter" + str(counter) + "\n")
 		printraw("---------------------------------------------------------------\n")
+		pass
 	
 	#for i in out_array.size() :
 		#if i % 3 == 0 : printraw("\n")
