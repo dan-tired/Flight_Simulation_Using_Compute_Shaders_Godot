@@ -44,11 +44,11 @@ func handleInput(delta: float) -> void:
 			$"L Anchor".rotate_object_local(planeRight, rollAngle)
 			$"R Anchor".rotate_object_local(planeRight, -rollAngle)
 		if Input.is_action_pressed("Pitch Down") :
-			$"L Anchor".rotate_object_local(planeRight, rollAngle)
-			$"R Anchor".rotate_object_local(planeRight, rollAngle)
-		if Input.is_action_pressed("Pitch Up") :
 			$"L Anchor".rotate_object_local(planeRight, -rollAngle)
 			$"R Anchor".rotate_object_local(planeRight, -rollAngle)
+		if Input.is_action_pressed("Pitch Up") :
+			$"L Anchor".rotate_object_local(planeRight, rollAngle)
+			$"R Anchor".rotate_object_local(planeRight, rollAngle)
 	else :
 		# Pitch down
 		var pitchD : float = 0.0

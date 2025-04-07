@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bxnt8n23173nr" path="res://Scripts/main.gd" id="1_skjnb"]
 [ext_resource type="Script" uid="uid://c7p8uv368daly" path="res://Scripts/compute_forces.gd" id="2_5yn84"]
-[ext_resource type="PackedScene" uid="uid://djqe6qcvbm1qw" path="res://Scenes/plane_scene.tscn" id="3_swi1m"]
+[ext_resource type="PackedScene" uid="uid://chkg1wkrh72n4" path="res://Scenes/f16_plane_scene.tscn" id="3_pbw6q"]
 [ext_resource type="Script" uid="uid://bpre0eiriyjyy" path="res://Scripts/main_terrain.gd" id="3_wt4pn"]
 [ext_resource type="PackedScene" uid="uid://dntw0xdlqi03d" path="res://Scenes/terrain.tscn" id="4_5p7s3"]
 
@@ -75,30 +75,30 @@ viewport_path = NodePath("DepthNormalSubViewport")
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_skjnb")
-cam_dist = 10.0
+cam_dist = 15.0
 
 [node name="DepthNormalSubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-canvas_cull_mask = 4293918736
+canvas_cull_mask = 4293919743
 render_target_update_mode = 4
 script = ExtResource("2_5yn84")
 coefficientOfLift = 0.17
 applyCentralForce = true
 
-[node name="PlaneScene" parent="DepthNormalSubViewport" instance=ExtResource("3_swi1m")]
-mass = 0.3
-THRUST_ACCEL = 5.0
+[node name="PlaneScene" parent="DepthNormalSubViewport" instance=ExtResource("3_pbw6q")]
+mass = 92.0
+startThrust = 10000.0
 
 [node name="OrthoCam" type="Camera3D" parent="DepthNormalSubViewport"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -2.5, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -15, 0)
 rotation_order = 0
-cull_mask = 16
+cull_mask = 2
 environment = SubResource("Environment_tewqb")
 projection = 1
 current = true
-size = 7.0
+size = 25.0
 near = 0.001
-far = 5.5
+far = 30.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0c3bt")
@@ -114,8 +114,8 @@ directional_shadow_fade_start = 1.0
 directional_shadow_max_distance = 8192.0
 
 [node name="FollowerCam" type="Camera3D" parent="."]
-transform = Transform3D(-4.37114e-08, -0.5, 0.866025, 0, 0.866025, 0.5, -1, 2.18557e-08, -3.78552e-08, 1, 0.6, 0)
-cull_mask = 3
+transform = Transform3D(-4.37114e-08, -0.5, 0.866025, 0, 0.866025, 0.5, -1, 2.18557e-08, -3.78552e-08, 8.78013, 4.12052, 0)
+cull_mask = 1023
 current = true
 far = 1000.0
 

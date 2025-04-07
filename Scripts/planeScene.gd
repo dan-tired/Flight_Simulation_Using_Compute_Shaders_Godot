@@ -1,8 +1,10 @@
 extends RigidBody3D
 
-@export var THRUST_ACCEL : float = 10
+@export var THRUST_ACCEL : float = 100
+@export var startThrust : float = 1000
 @export var useAilerons : bool = false
 @export var useThrust : bool = true
+@export var angDamp : float = 1.0
 
 var thrust : float = 0.0
 
@@ -17,7 +19,10 @@ func _ready() -> void:
 	camDist = orthoCam.position.y
 	$PlaneBody.useAilerons = useAilerons
 	
-	apply_central_impulse(Vector3(-30, 0, 0))
+	thrust = startThrust
+	
+	apply_central_impulse(Vector3(-10, 0, 0))
+	angular_damp = angDamp
 
 func _process(_delta : float) -> void :
 	orthoCam.global_position = self.global_position + camDist * (Vector3(0.0, 1.0, 0.0))
@@ -42,10 +47,6 @@ func _physics_process(delta: float) -> void:
 			else :
 				thrust = 0.0
 		
-		#linear_velocity = (direction * thrust * delta) + get_gravity()
-		
 		apply_central_force(direction * thrust)
-		
-		#print(global_position)
 	
 	

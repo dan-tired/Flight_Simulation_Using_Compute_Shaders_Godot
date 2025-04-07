@@ -6,6 +6,8 @@ extends Node3D
 func _ready() -> void:
 	$FollowerCam.make_current()
 	
+	get_tree().root.mesh_lod_threshold = 0
+	
 	## Slowing down time for debug
 	#Engine.time_scale = 0.05
 

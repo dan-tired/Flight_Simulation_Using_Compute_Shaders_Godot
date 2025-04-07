@@ -41,14 +41,31 @@ void fragLiftForce(in vec3 norm, in float angle, in float liftCoef, in float pre
 
     float density = pressure / (R * avgTempK);
 
+    // Calculating the cos of the angle between the normal and the negative y direction
     float cosTheta = dot(norm, vec3(0.0f, -1.0f, 0.0f)) / length(norm); 
 
-    float actualPixelSize = pow(pixelWidth / cosTheta, 2);
-    //float actualPixelSize = pixelWidth / cosTheta;
+    // Calculating the size of the fragment in 3D space
+    float actualPixelSize = pow(pixelWidth, 2);
+    //float actualPixelSize = pow(pixelWidth / cosTheta, 2);
 
     LiftForce = -(density * 0.5f * liftCoef * pow(speed, 2.0f) * actualPixelSize * norm);
     //LiftForce = -(density * 0.5f * liftCoef * pow(speed, 2.0f) * pow(pixelWidth, 2) * norm);
     //LiftForce = (density * 0.5f * liftCoef * pow(speed, 2.0f) * actualPixelSize * vec3(0.0f, 1.0f, 0.0f));
+}
+
+void angVelToLinearVel(in vec3 pos, in vec3 angVel, out vec3 linearVel) {
+    // r is the distance around the centre of rotation around each axis
+    vec3 r = vec3(
+        length(pos.yz),
+        length(pos.xz),
+        length(pos.xy)
+    );
+
+    linearVel = vec3(
+        r.y * sin(angVel.y) + r.z * cos(angVel.z),
+        r.x * cos(angVel.x) + r.z * sin(angVel.z),
+        r.x * sin(angVel.x) + r.y * cos(angVel.y)
+    );
 }
 
 void main() {
@@ -62,8 +79,6 @@ void main() {
     if (texel_col.a == 0.f) {
         return;
     }
-
-    //vec3 norm = normalize((texel_col.xyz * 2.0f) - 1.0f);
 
     vec3 fixedNorm = (texel_col.xyz * 2.0f) - 1.0f;
 
@@ -103,6 +118,13 @@ void main() {
     // Camera y position relative to the plane
     float camRelPos = input_buffer.data[9];
 
+    // Angular velocity of the plane around it's origin in radians
+    vec3 angVel = vec3(
+        input_buffer.data[10],
+        input_buffer.data[11],
+        input_buffer.data[12]
+    );
+
     float depth = (camFar - camNear) * (1 - texel_col.g);
 
     vec3 forcePos = vec3(
@@ -111,12 +133,18 @@ void main() {
         ((gl_GlobalInvocationID.y - (texWidth / 2.0f)) / texWidth) * camSize
     );
 
-    //forcePos /= (gl_WorkGroupSize.x * gl_WorkGroupSize.y);
+    vec3 angVelLinear;
 
-    // Currently I am defining "wind" to be the direction opposite to the direction of travel
+    angVelToLinearVel(forcePos, angVel, angVelLinear);
+
+    // Finding the total velocity of the fragment
+    // Since angular velocity is already in radians, no conversion is needed
+    vec3 totalVel = vel + angVelLinear;
+
+    // I am defining "wind" to be the direction opposite to the fragment's direction of travel
     // Aerodynamic force is also dependent on the velocity and mass of the fluid, not the object
         // Meaning, we need to be using windVel in lift calculations
-    vec3 windVel = -vel;
+    vec3 windVel = -totalVel;
 
     // The normal of the plane intersecting the wing from the direction of the wind
     vec3 planeIntersectNorm = normalize(cross(windVel, vec3(0.0, 1.0, 0.0)));

@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://f2pl8bu3shah"]
+
+[ext_resource type="Script" uid="uid://b8kgcy6tqclcc" path="res://Scripts/planeScene.gd" id="1_rmgdj"]
+[ext_resource type="Script" uid="uid://pf7pbkfk0qpf" path="res://Scripts/ps_userControl.gd" id="2_hld8q"]
+[ext_resource type="PackedScene" uid="uid://u52o0udtrmie" path="res://Assets/models/cow/cow.tscn" id="3_rmgdj"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rmgdj"]
+radius = 2.39502
+height = 12.3859
+
+[node name="PlaneScene" type="RigidBody3D"]
+mass = 9217.0
+script = ExtResource("1_rmgdj")
+
+[node name="PlaneBody" type="Node3D" parent="."]
+script = ExtResource("2_hld8q")
+useAilerons = true
+
+[node name="Sketchfab_Scene" parent="PlaneBody" instance=ExtResource("3_rmgdj")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="Front" type="Node3D" parent="PlaneBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+
+[node name="Right" type="Node3D" parent="PlaneBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+
+[node name="Up" type="Node3D" parent="PlaneBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_rmgdj")

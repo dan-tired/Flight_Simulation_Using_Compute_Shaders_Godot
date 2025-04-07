@@ -15,8 +15,6 @@ shader_parameter/uvy = 4.75e-06
 
 [node name="Terrain" type="Node3D"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.4368, 8.58408, 8.62369)
-layers = 2
+[node name="ClipMapMesh" type="MeshInstance3D" parent="."]
 mesh = ExtResource("1_g24sy")
 surface_material_override/0 = SubResource("ShaderMaterial_pmkc2")

@@ -8,6 +8,7 @@ var rd : RenderingDevice
 var texture_size : Vector2i
 
 var totalForce : Vector3 = Vector3()
+var averagePos : Vector3 = Vector3()
 
 var shader : RID
 var pipeline : RID
@@ -38,9 +39,9 @@ signal compute_code_ready
 func _ready() -> void:
 	render_target_update_mode = UpdateMode.UPDATE_ALWAYS
 	
-	plane = get_parent().get_node("DepthNormalSubViewport/PlaneScene")
+	plane = $PlaneScene
 	
-	var cam : Camera3D = get_parent().get_node("DepthNormalSubViewport/OrthoCam")
+	var cam : Camera3D = $OrthoCam
 	
 	camSize = cam.size
 	camNear = cam.near
@@ -126,7 +127,7 @@ func _init_compute_code() -> void:
 	
 	# Creating array for input
 	var array_initialiser = []
-	for i in 10 :
+	for i in 13 :
 		array_initialiser.append(0)
 	var input_buffer_pba := PackedInt32Array(array_initialiser).to_byte_array()
 	input_buffer = rd.storage_buffer_create(input_buffer_pba.size(), input_buffer_pba)
@@ -139,12 +140,13 @@ func _init_compute_code() -> void:
 	var output_buffer_pba := PackedInt32Array(array_initialiser).to_byte_array()
 	output_buffer = rd.storage_buffer_create(output_buffer_pba.size(), output_buffer_pba)
 	
-	# Creating the buffer uniform
+	# Creating the input buffer uniform
 	var input_buf_uniform := RDUniform.new()
 	input_buf_uniform.binding = 1
 	input_buf_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
 	input_buf_uniform.add_id(input_buffer)
 	
+	# Creatubg the output buffer uniform
 	var output_buf_uniform := RDUniform.new()
 	output_buf_uniform.binding = 2
 	output_buf_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
@@ -192,6 +194,11 @@ func _render_process() -> void:
 	# Passing in the camera position to make the depth calculation meaningful
 	input_array[9] = camRelPos
 	
+	# Passing in the object's angular velocity
+	input_array[10] = plane.angular_velocity.x
+	input_array[11] = plane.angular_velocity.y
+	input_array[12] = plane.angular_velocity.z
+	
 	pba = input_array.to_byte_array()
 	
 	# Angle of attack needs to be calculated from the vector normals
@@ -211,6 +218,7 @@ func _render_process() -> void:
 	var out_array = pba.to_float32_array()
 	
 	totalForce = Vector3()
+	averagePos = Vector3()
 	forceArr = PackedVector3Array()
 	forcePosArr = PackedVector3Array()
 	var forceComponent := Vector3()
@@ -241,6 +249,7 @@ func _render_process() -> void:
 					if(forceComponent.is_equal_approx(Vector3(0.0, 0.0, 0.0))) :
 						continue
 					
+					totalForce += forceComponent
 					forceArr.append(forceComponent)
 			else :
 				#printraw("1")

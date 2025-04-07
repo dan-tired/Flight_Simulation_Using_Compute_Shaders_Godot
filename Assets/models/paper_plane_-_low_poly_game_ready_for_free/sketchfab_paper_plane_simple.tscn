@@ -5,6 +5,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dw2d3"]
 render_priority = 0
 shader = ExtResource("1_yw00i")
+shader_parameter/metallic_channel = Vector3(0, 0, 0)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_3exfe"]
 _surfaces = [{
@@ -49,6 +50,6 @@ shadow_mesh = SubResource("ArrayMesh_3exfe")
 [node name="PaperPlane" type="Node3D" parent="Sketchfab_model/PaperPlane_fbx/RootNode"]
 
 [node name="PaperPlane__0" type="MeshInstance3D" parent="Sketchfab_model/PaperPlane_fbx/RootNode/PaperPlane"]
-layers = 17
+layers = 2
 mesh = SubResource("ArrayMesh_sowil")
 skeleton = NodePath("")
