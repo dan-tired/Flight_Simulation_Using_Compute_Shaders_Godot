@@ -1,20 +1,22 @@
-[gd_scene load_steps=5 format=3 uid="uid://dntw0xdlqi03d"]
+[gd_scene load_steps=6 format=3 uid="uid://dntw0xdlqi03d"]
 
-[ext_resource type="ArrayMesh" uid="uid://cptq5nmkbacyd" path="res://Assets/clipmap_mesh.obj" id="1_g24sy"]
+[ext_resource type="ArrayMesh" uid="uid://cptq5nmkbacyd" path="res://Assets/terrain/clipmap mesh/clipmap_mesh.obj" id="1_g24sy"]
 [ext_resource type="Shader" uid="uid://mu0ot0gttu8s" path="res://Shaders/gdShaders/terrain.gdshader" id="2_ja2gm"]
-[ext_resource type="Texture2D" uid="uid://cbx4604bny0gf" path="res://Assets/heightmap_linear_light.jpg" id="3_pmkc2"]
+[ext_resource type="Texture2D" uid="uid://dl75v2m60tqnj" path="res://Assets/terrain/clipmap mesh/heightmap_overlay.jpg" id="3_hvvm8"]
+[ext_resource type="Texture2D" uid="uid://d0og30h3ikm33" path="res://Assets/terrain/Seamless green grass vector pattern.jpg" id="4_hvvm8"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_pmkc2"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0ac8p"]
 render_priority = 0
 shader = ExtResource("2_ja2gm")
-shader_parameter/heightmap = ExtResource("3_pmkc2")
+shader_parameter/terrainTex = ExtResource("4_hvvm8")
+shader_parameter/heightmap = ExtResource("3_hvvm8")
 shader_parameter/terrian_height = 50.0
 shader_parameter/uv_scale = 2.5
-shader_parameter/uvx = 4.75e-06
-shader_parameter/uvy = 4.75e-06
+shader_parameter/uvx = 0.0
+shader_parameter/uvy = 0.0
 
 [node name="Terrain" type="Node3D"]
 
 [node name="ClipMapMesh" type="MeshInstance3D" parent="."]
 mesh = ExtResource("1_g24sy")
-surface_material_override/0 = SubResource("ShaderMaterial_pmkc2")
+surface_material_override/0 = SubResource("ShaderMaterial_0ac8p")

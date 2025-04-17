@@ -29,11 +29,12 @@ void fragment() {
 		ALBEDO.rgb = vec3(0.0);
 		EMISSION.rb = boundedWorldNorms.xz;
 		EMISSION.g = FRAGCOORD.z;
-	} else {
+	}
+	else {
 		//ALBEDO = COLOR.xyz;
 		vec4 texel = texture(tex, UV.xy);
 		ALBEDO = texel.xyz;
-		METALLIC = 
+		METALLIC =
 			metallic_channel.x * texture(metallic, UV.xy).x +
 			metallic_channel.y * texture(metallic, UV.xy).y +
 			metallic_channel.z * texture(metallic, UV.xy).z;

@@ -23,12 +23,16 @@ var fmt : RDTextureFormat
 var img_pba : PackedByteArray
 
 var ready_complete : bool
+var isSubmitted : bool
 
 var plane : RigidBody3D
 var camSize : float
 var camNear : float
 var camFar : float
 var camRelPos : float
+
+var initialTime : float
+var lastSecond : int
 
 var forceArr : PackedVector3Array
 var forcePosArr : PackedVector3Array
@@ -48,6 +52,9 @@ func _ready() -> void:
 	camFar = cam.far
 	camRelPos = cam.position.y
 	
+	initialTime = Time.get_unix_time_from_system()
+	lastSecond = 0
+	
 	await RenderingServer.frame_post_draw
 	
 	RenderingServer.call_on_render_thread(_init_compute_code)
@@ -66,11 +73,18 @@ func _process(_delta: float) -> void:
 	
 	RenderingServer.call_on_render_thread(_render_process)
 	
-	#print("frame")
-	#print(plane.linear_velocity)
-	#print(totalForce.length())
-	#print(totalForce)
-	#print()
+	var elapsedTime := Time.get_unix_time_from_system() - initialTime
+	
+	if lastSecond < elapsedTime :
+		print("frame")
+		print("Elapsed time:\t" + str(elapsedTime))
+		print("Global Position:\t" + str(plane.global_position))
+		print("Linear Vel:  \t" + str(plane.linear_velocity))
+		print("Angular Vel: \t" + str(plane.angular_velocity))
+		print("Force Magnitude:\t" + str(totalForce.length()))
+		print("Force Direction:\t" + str(totalForce))
+		print()
+		lastSecond += 1
 
 func _physics_process(delta: float) -> void:
 	
@@ -89,7 +103,7 @@ func _init_compute_code() -> void:
 	# Retrieving the rendering device
 	rd = RenderingServer.create_local_rendering_device()
 	# Creating the shader
-	var shader_file : Resource = load("res://Shaders/ComputeShaderFiles/compute_example.glsl")
+	var shader_file : Resource = load("res://Shaders/ComputeShaderFiles/compute_lift.glsl")
 	var shader_spirv : RDShaderSPIRV = shader_file.get_spirv()
 	shader = rd.shader_create_from_spirv(shader_spirv)
 	pipeline = rd.compute_pipeline_create(shader)
@@ -202,7 +216,6 @@ func _render_process() -> void:
 	pba = input_array.to_byte_array()
 	
 	# Angle of attack needs to be calculated from the vector normals
-	
 	rd.buffer_update(input_buffer, 0, pba.size(), pba)
 	
 	var compute_list := rd.compute_list_begin()

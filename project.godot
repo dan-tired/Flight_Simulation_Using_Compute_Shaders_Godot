@@ -13,7 +13,6 @@ config_version=5
 config/name="Dissertation: Shader Force Calculator"
 run/main_scene="res://Scenes/Main.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
-config/icon="res://Assets/icon.svg"
 
 [input]
 
@@ -50,6 +49,7 @@ config/icon="res://Assets/icon.svg"
 
 [physics]
 
+3d/default_linear_damp=0.0
 3d/max_physics_steps_per_frame=8
 
 [rendering]

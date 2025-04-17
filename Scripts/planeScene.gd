@@ -1,12 +1,14 @@
 extends RigidBody3D
 
-@export var THRUST_ACCEL : float = 100
-@export var startThrust : float = 1000
+@export var THRUST_ACCEL : float = 0
+@export var startThrust : float = 0
+@export var startImpulse : float = 0
 @export var useAilerons : bool = false
 @export var useThrust : bool = true
-@export var angDamp : float = 1.0
+@export var angDamp : float = 0.0
+@export var linearDamp : float = 0.0
 
-var thrust : float = 0.0
+var thrust : float
 
 var direction : Vector3 = Vector3(-1.0, 0.0, 0.0)
 
@@ -21,8 +23,9 @@ func _ready() -> void:
 	
 	thrust = startThrust
 	
-	apply_central_impulse(Vector3(-10, 0, 0))
+	apply_central_impulse(Vector3(-startImpulse, 0, 0))
 	angular_damp = angDamp
+	linear_damp = linearDamp
 
 func _process(_delta : float) -> void :
 	orthoCam.global_position = self.global_position + camDist * (Vector3(0.0, 1.0, 0.0))
@@ -41,11 +44,11 @@ func _physics_process(delta: float) -> void:
 			thrust += THRUST_ACCEL * delta
 		elif Input.is_action_pressed("Reduce Thrust") :
 			thrust -= THRUST_ACCEL * delta
-		else :
-			if thrust >= 0.0 :
-				thrust -= 2 * THRUST_ACCEL * delta
-			else :
-				thrust = 0.0
+		#else :
+			#if thrust >= 0.0 :
+				#thrust -= 2 * THRUST_ACCEL * delta
+			#else :
+				#thrust = 0.0
 		
 		apply_central_force(direction * thrust)
 	

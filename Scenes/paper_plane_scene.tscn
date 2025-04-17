@@ -1,0 +1,64 @@
+[gd_scene load_steps=8 format=3 uid="uid://djqe6qcvbm1qw"]
+
+[ext_resource type="Script" uid="uid://b8kgcy6tqclcc" path="res://Scripts/planeScene.gd" id="1_efl81"]
+[ext_resource type="Script" uid="uid://pf7pbkfk0qpf" path="res://Scripts/ps_userControl.gd" id="2_qpa8r"]
+[ext_resource type="PackedScene" uid="uid://cnlw3b3rbqbll" path="res://Assets/models/paper_plane_-_low_poly_game_ready_for_free/sketchfab_paper_plane_simple.tscn" id="3_slhpa"]
+[ext_resource type="Shader" uid="uid://c3gay8w7e16et" path="res://Shaders/gdShaders/depthnorm.gdshader" id="4_wqbgy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vkqst"]
+size = Vector3(3.91805, 0.798519, 3.78355)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ix2oq"]
+size = Vector3(0.5, 0.01, 1.2)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b2374"]
+render_priority = 0
+shader = ExtResource("4_wqbgy")
+shader_parameter/metallic_channel = Vector3(0, 0, 0)
+
+[node name="PlaneScene" type="RigidBody3D"]
+mass = 0.1
+script = ExtResource("1_efl81")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.977651, 0.210233, 0, -0.210233, 0.977651, 0, 0, 0, 1, 0.459, 0.369, 0)
+shape = SubResource("BoxShape3D_vkqst")
+debug_color = Color(0, 0.595, 0.7, 0)
+debug_fill = false
+
+[node name="PlaneBody" type="Node3D" parent="."]
+transform = Transform3D(0.977651, 0.210233, 0, -0.210233, 0.977651, 0, 0, 0, 1, -0.0413282, 0.0595291, 0.0091399)
+script = ExtResource("2_qpa8r")
+useAilerons = true
+
+[node name="Front" type="Node3D" parent="PlaneBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+
+[node name="Right" type="Node3D" parent="PlaneBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+
+[node name="Up" type="Node3D" parent="PlaneBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Sketchfab_Scene" parent="PlaneBody" instance=ExtResource("3_slhpa")]
+transform = Transform3D(-8.64872e-08, 0.978596, 0.205794, -8.99554e-09, 0.205794, -0.978596, -1, -8.64873e-08, -8.99554e-09, 0.000332598, 0.0408383, -0.0091399)
+
+[node name="L Anchor" type="Node3D" parent="PlaneBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.954, 0.439, 1)
+
+[node name="L Aileron" type="MeshInstance3D" parent="PlaneBody/L Anchor"]
+transform = Transform3D(0.977652, -0.210233, 0, 0.210233, 0.977652, 0, 0, 0, 1, 0.25, 0.0338089, 0)
+layers = 1023
+mesh = SubResource("BoxMesh_ix2oq")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_b2374")
+
+[node name="R Anchor" type="Node3D" parent="PlaneBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.954, 0.439, -1)
+
+[node name="R Aileron" type="MeshInstance3D" parent="PlaneBody/R Anchor"]
+transform = Transform3D(0.977652, -0.210233, 0, 0.210233, 0.977652, 0, 0, 0, 1, 0.25, 0.0338089, 0)
+layers = 511
+mesh = SubResource("BoxMesh_ix2oq")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_b2374")

@@ -2,6 +2,7 @@ shader_type spatial;
 
 render_mode cull_back;
 
+uniform sampler2D terrainTex;
 uniform sampler2D heightmap;
 uniform float terrian_height;
 uniform float uv_scale;
@@ -31,14 +32,12 @@ void vertex() {
 
 	VERTEX.xyz += vec_displacement;
 
-	NORMAL = getNormal(uvs, 2.0 * uv_scale / (float(textureSize(heightmap, 0).x)));
-
-	COLOR.rgb = vec3(0.1, 0.6, 0.2);
+	NORMAL = getNormal(uvs, 5.0 * uv_scale / (float(textureSize(heightmap, 0).x)));
 
 }
 
 void fragment() {
-	ALBEDO = COLOR.rgb;
+	ALBEDO = texture(terrainTex, vec2(UV.x + uvx, UV.y + uvy) / uv_scale * 700.f).xyz;
 	NORMAL = NORMAL;
 }
 
