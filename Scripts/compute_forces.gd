@@ -1,9 +1,5 @@
 extends SubViewport
 
-@export var coefficientOfLift : float
-
-@export var applyCentralForce : bool
-
 var rd : RenderingDevice
 var texture_size : Vector2i
 
@@ -26,6 +22,7 @@ var ready_complete : bool
 var isSubmitted : bool
 
 var plane : RigidBody3D
+
 var camSize : float
 var camNear : float
 var camFar : float
@@ -75,7 +72,7 @@ func _process(_delta: float) -> void:
 	
 	var elapsedTime := Time.get_unix_time_from_system() - initialTime
 	
-	if lastSecond < elapsedTime :
+	if lastSecond <= elapsedTime :
 		print("frame")
 		print("Elapsed time:\t" + str(elapsedTime))
 		print("Global Position:\t" + str(plane.global_position))
@@ -88,7 +85,7 @@ func _process(_delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	
-	if applyCentralForce :
+	if plane.applyForceCentrally :
 		plane.apply_central_force(totalForce * delta)
 	else :
 		if forceArr.size() > 0 :
@@ -189,7 +186,7 @@ func _render_process() -> void:
 	
 	# Passing in the coefficient of lift - users can set this themselves
 	# They can do this experimentally or based on research
-	input_array[3] = coefficientOfLift
+	input_array[3] = plane.lift_coefficient
 	
 	# Passing in the height of the plane for calculating air density
 	input_array[4] = plane.global_position.y
@@ -237,7 +234,7 @@ func _render_process() -> void:
 	var forceComponent := Vector3()
 	var forcePos := Vector3()
 	
-	if applyCentralForce :
+	if plane.applyForceCentrally :
 		for i in out_array.size() :
 			if int(i / (3 * x_groups)) % 2 == 0 :
 				if i % 3 == 0 :

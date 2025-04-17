@@ -11,6 +11,7 @@ height = 12.3859
 [node name="PlaneScene" type="RigidBody3D"]
 mass = 9217.0
 script = ExtResource("1_rmgdj")
+lift_coefficient = 0.01
 
 [node name="PlaneBody" type="Node3D" parent="."]
 script = ExtResource("2_hld8q")

@@ -1,10 +1,20 @@
 extends RigidBody3D
 
-@export var THRUST_ACCEL : float = 0
-@export var startThrust : float = 0
-@export var startImpulse : float = 0
-@export var useAilerons : bool = false
+@export_group("Lift application")
+@export var lift_coefficient : float = 0.0
+@export var applyForceCentrally : bool = true
+
+@export_group("Control")
+@export_subgroup("Directional control")
+@export var useControlSurfaces : bool = false
+
+@export_subgroup("Thrust control")
+@export var THRUST_ACCEL : float = 0.0
+@export var startThrust : float = 0.0
+@export var startImpulse : float = 0.0
 @export var useThrust : bool = true
+
+@export_group("Damping")
 @export var angDamp : float = 0.0
 @export var linearDamp : float = 0.0
 
@@ -19,7 +29,7 @@ var orthoCam : Camera3D
 func _ready() -> void:
 	orthoCam = get_parent().get_node("OrthoCam")
 	camDist = orthoCam.position.y
-	$PlaneBody.useAilerons = useAilerons
+	$PlaneBody.useControlSurfaces = useControlSurfaces
 	
 	thrust = startThrust
 	

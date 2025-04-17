@@ -10,6 +10,7 @@ size = Vector3(3.91805, 0.798519, 3.78355)
 [node name="PlaneScene" type="RigidBody3D"]
 mass = 9217.0
 script = ExtResource("1_u6a3i")
+lift_coefficient = 1.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.168, 1.139, 0)

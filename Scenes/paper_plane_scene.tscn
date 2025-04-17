@@ -19,6 +19,7 @@ shader_parameter/metallic_channel = Vector3(0, 0, 0)
 [node name="PlaneScene" type="RigidBody3D"]
 mass = 0.1
 script = ExtResource("1_efl81")
+lift_coefficient = 0.17
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.977651, 0.210233, 0, -0.210233, 0.977651, 0, 0, 0, 1, 0.459, 0.369, 0)
