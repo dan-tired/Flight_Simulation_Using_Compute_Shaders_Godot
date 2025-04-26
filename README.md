@@ -45,3 +45,16 @@ Certain models and assets were found online. These are listed below. The license
 	- [Green grass texture](/Assets/terrain/Seamless%20green%20grass%20vector%20pattern.jpg) Posted by user @macrovector on [https://www.freepik.com](https://www.freepik.com/free-vector/seamless-green-grass-pattern_13187581.htm#fromView=keyword&page=1&position=0&uuid=7f224797-b11a-4bd8-9119-b7325e457865&query=Grass+Texture)
 
 # License
+Copyright 2025 Daniel Valadkevich
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
