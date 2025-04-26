@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bxnt8n23173nr" path="res://Scripts/main.gd" id="1_skjnb"]
 [ext_resource type="Script" uid="uid://c7p8uv368daly" path="res://Scripts/compute_forces.gd" id="2_5yn84"]
-[ext_resource type="PackedScene" uid="uid://djqe6qcvbm1qw" path="res://Scenes/paper_plane_scene.tscn" id="3_pbw6q"]
+[ext_resource type="PackedScene" uid="uid://djqe6qcvbm1qw" path="res://Scenes/Plane Models/paper_plane_scene.tscn" id="3_pbw6q"]
 [ext_resource type="Script" uid="uid://bpre0eiriyjyy" path="res://Scripts/main_terrain.gd" id="3_wt4pn"]
 [ext_resource type="PackedScene" uid="uid://dntw0xdlqi03d" path="res://Scenes/terrain.tscn" id="4_5p7s3"]
 

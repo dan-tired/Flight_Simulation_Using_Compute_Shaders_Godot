@@ -11,6 +11,10 @@ size = Vector3(3.91805, 0.798519, 3.78355)
 mass = 9217.0
 script = ExtResource("1_u6a3i")
 lift_coefficient = 1.5
+applyForceCentrally = false
+THRUST_ACCEL = 1e+06
+startThrust = 500000.0
+useThrust = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.168, 1.139, 0)
@@ -18,7 +22,6 @@ shape = SubResource("BoxShape3D_vkqst")
 
 [node name="PlaneBody" type="Node3D" parent="."]
 script = ExtResource("2_r22ea")
-useAilerons = true
 
 [node name="Front" type="Node3D" parent="PlaneBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)

@@ -1,11 +1,16 @@
 extends Node3D
 
+# Variable for setting the distance from the camera to the plane object
+# Useful for objects of different sizes
 @export var cam_dist : float = 1.0
 
 # Called when the node enters the scene tree for the first time.
+# Sets the camera to the follower camera and changes some project settings.
 func _ready() -> void:
 	$FollowerCam.make_current()
 	
+	# Removing mesh LOD as the terrain has it built-in and the models look better without it.
+	# (and in the context of this demo - they don't cause a performance drop)
 	get_tree().root.mesh_lod_threshold = 0
 	
 	## Slowing down time for debug
@@ -13,6 +18,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
+# Does the required maths for the follower cam to always stay behind the plane object.
 func _process(_delta: float) -> void:
 	var planeBody = $DepthNormalSubViewport/PlaneScene/PlaneBody
 	var planeForward : Vector3 = planeBody.get_node("Front").global_position - planeBody.global_position
@@ -20,6 +26,7 @@ func _process(_delta: float) -> void:
 	
 	var planeRight = planeForward.cross(planeUp)
 	
+	# The direction the plane is facing on the y-plane
 	var planeFacingDir = planeRight.cross(planeUp)
 	
 	$FollowerCam.global_position = planeBody.global_position + (planeFacingDir.normalized() * cam_dist)

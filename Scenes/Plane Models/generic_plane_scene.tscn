@@ -1,14 +1,14 @@
 [gd_scene load_steps=4 format=3 uid="uid://drfig5j5yf1vk"]
 
-[ext_resource type="Script" uid="uid://b8kgcy6tqclcc" path="res://Scripts/planeScene.gd" id="1_pv37x"]
-[ext_resource type="Script" uid="uid://pf7pbkfk0qpf" path="res://Scripts/ps_userControl.gd" id="2_7hc5s"]
+[ext_resource type="Script" uid="uid://b8kgcy6tqclcc" path="res://Scripts/planeScene.gd" id="1_t866e"]
+[ext_resource type="Script" uid="uid://pf7pbkfk0qpf" path="res://Scripts/ps_userControl.gd" id="2_r7csm"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vkqst"]
 size = Vector3(3.91805, 0.798519, 3.78355)
 
 [node name="PlaneScene" type="RigidBody3D"]
 mass = 0.1
-script = ExtResource("1_pv37x")
+script = ExtResource("1_t866e")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.977651, 0.210233, 0, -0.210233, 0.977651, 0, 0, 0, 1, 0.459, 0.369, 0)
@@ -18,8 +18,7 @@ debug_fill = false
 
 [node name="PlaneBody" type="Node3D" parent="."]
 transform = Transform3D(0.977651, 0.210233, 0, -0.210233, 0.977651, 0, 0, 0, 1, -0.0413282, 0.0595291, 0.0091399)
-script = ExtResource("2_7hc5s")
-useAilerons = true
+script = ExtResource("2_r7csm")
 
 [node name="Front" type="Node3D" parent="PlaneBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)

@@ -1,25 +1,32 @@
 extends Node3D
 
+# Direction directly down
 const DOWN = Vector3(.0, -1.0, .0)
 
+# Pitching angular speed
 const TIP_SPEED : float = 1.0
-const AILERON_ROLL_SPEED : float = 1.0
+# Rolling angular speed
 const ROLL_SPEED : float = 1.0
+# Paper plane elevator control speed
+const CONT_SURF_SPEED : float = 1.0
 
+# The direction of the nose of the plane from its centre of mass
 var planeDirection : Vector3
 @onready var planeFront : Vector3 = Vector3(-1.0, .0, .0)
 @onready var planeRight : Vector3 = Vector3(.0, .0, -1.0)
 @onready var planeUp : Vector3 = Vector3(.0, 1.0, .0)
 
-@export var useAilerons : bool = false
+var useControlSurfaces : bool = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
+# Updates the direction vectors of the plane, then handles user input
 func _process(delta: float) -> void:
 	
 	updateDirectionVectors()
 	
 	handleInput(delta)
 
+# Updates the plane's front, up, and right directions using the cool and fun nodes for simplicity
 func updateDirectionVectors() -> void :
 	
 	planeFront = $Front.position
@@ -30,10 +37,11 @@ func updateDirectionVectors() -> void :
 	planeDirection = planeDirection.normalized()
 	
 
+# Handles user input
 func handleInput(delta: float) -> void:
 	
-	if useAilerons :
-		var tiltD = delta * AILERON_ROLL_SPEED
+	if useControlSurfaces : # If control surfaces are being used, the control surfaces are tilted
+		var tiltD = delta * CONT_SURF_SPEED
 		
 		var rollAngle = atan(tiltD)
 		
@@ -49,7 +57,7 @@ func handleInput(delta: float) -> void:
 		if Input.is_action_pressed("Pitch Up") :
 			$"L Anchor".rotate_object_local(planeRight, rollAngle)
 			$"R Anchor".rotate_object_local(planeRight, rollAngle)
-	else :
+	else : # If control surfaces are not being used, the pitch and roll of the object are updated independantly
 		# Pitch down
 		var pitchD : float = 0.0
 		# Roll right

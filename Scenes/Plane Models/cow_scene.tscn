@@ -1,23 +1,23 @@
 [gd_scene load_steps=5 format=3 uid="uid://f2pl8bu3shah"]
 
-[ext_resource type="Script" uid="uid://b8kgcy6tqclcc" path="res://Scripts/planeScene.gd" id="1_rmgdj"]
-[ext_resource type="Script" uid="uid://pf7pbkfk0qpf" path="res://Scripts/ps_userControl.gd" id="2_hld8q"]
-[ext_resource type="PackedScene" uid="uid://u52o0udtrmie" path="res://Assets/models/cow/cow.tscn" id="3_rmgdj"]
+[ext_resource type="Script" uid="uid://b8kgcy6tqclcc" path="res://Scripts/planeScene.gd" id="1_62mfp"]
+[ext_resource type="Script" uid="uid://pf7pbkfk0qpf" path="res://Scripts/ps_userControl.gd" id="2_bq6bu"]
+[ext_resource type="PackedScene" uid="uid://u52o0udtrmie" path="res://Assets/models/cow/cow.tscn" id="3_tl4pq"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rmgdj"]
 radius = 2.39502
 height = 12.3859
 
 [node name="PlaneScene" type="RigidBody3D"]
-mass = 9217.0
-script = ExtResource("1_rmgdj")
+mass = 650.0
+script = ExtResource("1_62mfp")
 lift_coefficient = 0.01
+startImpulse = 650.0
 
 [node name="PlaneBody" type="Node3D" parent="."]
-script = ExtResource("2_hld8q")
-useAilerons = true
+script = ExtResource("2_bq6bu")
 
-[node name="Sketchfab_Scene" parent="PlaneBody" instance=ExtResource("3_rmgdj")]
+[node name="Sketchfab_Scene" parent="PlaneBody" instance=ExtResource("3_tl4pq")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 
 [node name="Front" type="Node3D" parent="PlaneBody"]

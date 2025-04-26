@@ -4,13 +4,13 @@ This project is a demonstration of a novel use of compute shaders. This project 
 ## Installation
 1. Ensure you have a valid installation of Godot 4.4 - https://godotengine.org/download/
 2. Clone this repository into your desired project folder
-    - OR download the zip file
+	- OR download the zip file
 3. Open and run the project to verify the installation
 
 ## How to use the program
 The initial state of the project is with the paper plane scene already loaded in the Main Scene. If you run the program as is, the plane will start slowly descending in the air. It has no thrust and will not rotate unless you rotate it yourself using the arrow keys. The up and down keys control the pitch of the plane, and the left and right keys control the roll of the plane. Using these, you should notice if you pitch the plane completely downwards, it will fall quicker, and if you pitch it back up, it will use the speed it gained while falling to convert the vertical falling speed into a horizontal speed.
 
-Instructions on how to use self-imported models are left below. There is implementation for control surfaces in the case of the paper airplane, all other control surfaces on other objects are left as an exercise to the user to complete.
+Instructions on how to use self-imported models are listed below. There is implementation for control surfaces in the case of the paper airplane, all other control surfaces on other objects are left as an exercise to the user to complete.
 
 ### To import models
 Import the 3D models as you usually would. To use them out of the box you will need to follow the following steps.
@@ -36,12 +36,12 @@ These are provided for testing different plane and wing shapes. Here are a few t
 Certain models and assets were found online. These are listed below. The licenses of the 3D models are included with the models.
 
 - 3D model credits
-    - [Cow model](/Assets/models/cow/) : This work is based on "Cow" (https://sketchfab.com/3d-models/cow-99d333e3b4e4470a8d7d38436489c001) by Josué Boisvert (https://sketchfab.com/JosueBoisvert) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
-    - [F16 model](/Assets/models/f16-c_falcon/) : This work is based on "F16-C Falcon" (https://sketchfab.com/3d-models/f16-c-falcon-4bc2ff75dc584af2afd0aa6bd8b79015) by Carlos.Maciel (https://sketchfab.com/Carlos.Maciel) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
-    - [Paper plane model](/Assets/models/paper_plane_-_low_poly_game_ready_for_free/) : This work is based on "Paper Plane - Low Poly Game Ready For Free" (https://sketchfab.com/3d-models/paper-plane-low-poly-game-ready-for-free-53c935434bbd4d398bed826b0dd07446) by LittleZCoordinate (https://sketchfab.com/LittleZCoordinate) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
-    - [Clipmap mesh](/Assets/terrain/clipmap%20mesh/) - Modelled by github user 'dan-tired', but the idea for the technique used was made by user [@actualdevmar](https://www.youtube.com/@actualdevmar) on YouTube
+	- [Cow model](/Assets/models/cow/) : This work is based on "Cow" (https://sketchfab.com/3d-models/cow-99d333e3b4e4470a8d7d38436489c001) by Josué Boisvert (https://sketchfab.com/JosueBoisvert) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+	- [F16 model](/Assets/models/f16-c_falcon/) : This work is based on "F16-C Falcon" (https://sketchfab.com/3d-models/f16-c-falcon-4bc2ff75dc584af2afd0aa6bd8b79015) by Carlos.Maciel (https://sketchfab.com/Carlos.Maciel) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+	- [Paper plane model](/Assets/models/paper_plane_-_low_poly_game_ready_for_free/) : This work is based on "Paper Plane - Low Poly Game Ready For Free" (https://sketchfab.com/3d-models/paper-plane-low-poly-game-ready-for-free-53c935434bbd4d398bed826b0dd07446) by LittleZCoordinate (https://sketchfab.com/LittleZCoordinate) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+	- [Clipmap mesh](/Assets/terrain/clipmap%20mesh/) - Modelled by github user 'dan-tired', but the idea for the technique used was made by user [@actualdevmar](https://www.youtube.com/@actualdevmar) on YouTube
 
 - Texture credits
-    - [Green grass texture](/Assets/terrain/Seamless%20green%20grass%20vector%20pattern.jpg) Posted by user @macrovector on [https://www.freepik.com](https://www.freepik.com/free-vector/seamless-green-grass-pattern_13187581.htm#fromView=keyword&page=1&position=0&uuid=7f224797-b11a-4bd8-9119-b7325e457865&query=Grass+Texture)
+	- [Green grass texture](/Assets/terrain/Seamless%20green%20grass%20vector%20pattern.jpg) Posted by user @macrovector on [https://www.freepik.com](https://www.freepik.com/free-vector/seamless-green-grass-pattern_13187581.htm#fromView=keyword&page=1&position=0&uuid=7f224797-b11a-4bd8-9119-b7325e457865&query=Grass+Texture)
 
 # License
