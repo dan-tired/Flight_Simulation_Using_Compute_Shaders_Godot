@@ -20,15 +20,6 @@ output_buffer;
 
 layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
-void fragAerodynamicForce(in float speed, in vec3 norm, in float pressure, in float pixelWidth, out vec3 TotalAerodynamicForce) {
-    // Total Aerodynamic Force = Sum(pressure * vector normal * fragment area)
-    // We assume that pressure is proportional to velocity squared
-
-    float pressureWithSpeed = pressure * pow(speed, 2);
-
-    TotalAerodynamicForce = - (norm * pressureWithSpeed * pow(pixelWidth, 2));
-}
-
 void fragLiftForce(in vec3 norm, in float angle, in float liftCoef, in float pressure, in float speed, in float pixelWidth, out vec3 LiftForce) {
     vec3 fragLift;
 
@@ -155,6 +146,7 @@ void main() {
     vec3 wingDir = normalize(cross(planeIntersectNorm, norm));
 
     // The angle of attack of the "wind"
+    // Currently unused
     float AoA = acos(dot(wingDir, windVel) / (length(wingDir) * length(windVel)));
 
     // Air pressure at sea level is 101,325 Pa
@@ -167,11 +159,6 @@ void main() {
 
     vec3 liftForce = vec3(0.0f, 0.0f, 0.0f);
     fragLiftForce(norm, AoA, liftCoef, pressure, length(windVel), camSize/texWidth, liftForce);
-
-    // Test code, delete when some other output can be gotten from the shader
-    //if(texel_col.w > 0.0 && dot(norm, vec3(0.0, 1.0, 0.0)) < 0.0f) {
-    //    atomicAdd(output_buffer.data[gl_WorkGroupID.x + gl_WorkGroupID.y * 64], 1);
-    //}
 
     memoryBarrierShared();
     barrier();
